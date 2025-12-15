@@ -372,8 +372,8 @@ Interact with the API using tools like Postman, Insomnia, or cURL.
 
 ## Author Info
 **Temitope Alawode**
-*   LinkedIn: [linkedin.com/in/YourLinkedIn](https://linkedin.com/in/YourLinkedIn)
-*   Twitter: [@YourTwitterHandle](https://twitter.com/YourTwitterHandle)
+*   LinkedIn: [linkedin.com/in/YourLinkedIn](www.linkedin.com/in/temitope-alawode)
+
 
 ##
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-green?logo=node.js)](https://nodejs.org/)
