@@ -373,7 +373,7 @@ Interact with the API using tools like Postman, Insomnia, or cURL.
 ## Author Info
 **Temitope Alawode**
 *   LinkedIn: [www.linkedin.com/in/temitope-alawode]
-(www.linkedin.com/in/temitope-alawode)
+<!-- (www.linkedin.com/in/temitope-alawode) -->
 
 
 ##
