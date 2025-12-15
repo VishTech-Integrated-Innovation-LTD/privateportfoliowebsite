@@ -15,7 +15,7 @@ This project serves as the robust backend API for a private portfolio website, b
 ## Getting Started
 To set up and run the Portfolio Website Backend API locally, follow these steps.
 
-### Installation
+<!-- ### Installation
 1.  **Clone the Repository**:
     ```bash
     git clone https://github.com/VishTech-Integrated-Innovation-LTD/privateportfoliowebsite.git
@@ -60,7 +60,7 @@ npx sequelize-cli db:migrate
     ```bash
     npm start
     ```
-    The server will start on the port specified in your `.env` file (defaulting to 8000).
+    The server will start on the port specified in your `.env` file (defaulting to 8000). -->
 
 ## API Documentation
 The API provides several endpoints for managing user authentication, archive items, and categories.
