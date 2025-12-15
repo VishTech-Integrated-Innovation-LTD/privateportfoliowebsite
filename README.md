@@ -12,8 +12,8 @@ This project serves as the robust backend API for a private portfolio website, b
 *   **Flexible Data Filtering**: Retrieve archive items based on category or search queries for enhanced content discoverability.
 *   **Scalable Database**: Utilizes PostgreSQL for persistent data storage, managed through Sequelize ORM.
 
-## Getting Started
-To set up and run the Portfolio Website Backend API locally, follow these steps.
+<!-- ## Getting Started
+To set up and run the Portfolio Website Backend API locally, follow these steps. -->
 
 <!-- ### Installation
 1.  **Clone the Repository**:
@@ -66,7 +66,8 @@ npx sequelize-cli db:migrate
 The API provides several endpoints for managing user authentication, archive items, and categories.
 
 ### Base URL
-`http://localhost:8000` (or your configured `PORT`)
+`http://localhost:8000` 
+<!-- (or your configured `PORT`) -->
 
 ### Endpoints
 
