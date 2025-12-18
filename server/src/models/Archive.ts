@@ -1,6 +1,7 @@
 import { DataTypes, Model, ModelStatic } from "sequelize";
 import sequelize from "../db";
 import Category from "./Category";
+import CollectionItem from "./CollectionItem";
 
 // Define the attributes
 interface ArchiveAttributes {
@@ -17,6 +18,13 @@ interface ArchiveAttributes {
 
 // Define the instance type
 interface ArchiveInstance extends Model<ArchiveAttributes>, ArchiveAttributes { }
+
+// Define Models object for associate
+// ModelStatic: a type representing a Sequelize model constructor 
+// (the return type of sequelize.define).
+interface Models {
+  CollectionItem: ModelStatic<Model>;
+}
 
 // Define the base model and cast after defining
 const Archive = sequelize.define<ArchiveInstance>(
@@ -68,6 +76,14 @@ const Archive = sequelize.define<ArchiveInstance>(
         timestamps: true,
     }
 );
+
+// Extend the model with `associate`
+(Archive as typeof Archive & { associate?: (models: Models) => void }).associate = (models: Models) => {
+  Archive.hasMany(models.CollectionItem, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
+};
 
 Archive.belongsTo(Category);
 

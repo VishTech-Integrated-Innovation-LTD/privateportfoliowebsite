@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const db_1 = __importDefault(require("../db"));
 // Define the base model and cast after defining
-const Collection = db_1.default.define("Collection", {
+const CollectionItem = db_1.default.define("CollectionItem", {
     sn: {
         type: sequelize_1.DataTypes.INTEGER,
         autoIncrement: true,
@@ -17,22 +17,21 @@ const Collection = db_1.default.define("Collection", {
         defaultValue: sequelize_1.DataTypes.UUIDV4,
         primaryKey: true,
     },
-    name: {
-        type: sequelize_1.DataTypes.STRING,
+    CollectionId: {
+        type: sequelize_1.DataTypes.UUID,
         allowNull: false,
+        references: { model: 'Collections', key: 'id' },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
     },
-    description: {
-        type: sequelize_1.DataTypes.TEXT,
+    ArchiveId: {
+        type: sequelize_1.DataTypes.UUID,
         allowNull: false,
-    }
+        references: { model: 'Archives', key: 'id' },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    },
 }, {
     timestamps: true,
 });
-// Extend the model with `associate`
-Collection.associate = (models) => {
-    Collection.hasMany(models.CollectionItem, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-    });
-};
-exports.default = Collection;
+exports.default = CollectionItem;

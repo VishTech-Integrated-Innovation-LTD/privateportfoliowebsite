@@ -18,6 +18,7 @@ module.exports = {
         port: process.env.DB_PORT,
         dialect: 'postgres'
     },
+    jwtSecret: process.env.JWT_SECRET_KEY,
     test: {
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,

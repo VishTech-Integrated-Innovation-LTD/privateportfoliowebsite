@@ -52,5 +52,12 @@ const Archive = db_1.default.define("Archive", {
 }, {
     timestamps: true,
 });
+// Extend the model with `associate`
+Archive.associate = (models) => {
+    Archive.hasMany(models.CollectionItem, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    });
+};
 Archive.belongsTo(Category_1.default);
 exports.default = Archive;

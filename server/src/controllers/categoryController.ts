@@ -74,6 +74,7 @@ export const getCategoriesHandler = async (req: Request, res: Response) => {
 }
 
 
+
 // ================================================
 // @desc   Retrieve a Category by id
 // @route  GET  /categories/:id

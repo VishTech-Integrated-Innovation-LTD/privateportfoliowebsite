@@ -4,7 +4,7 @@ import { QueryInterface, DataTypes } from "sequelize";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-    await queryInterface.createTable('Collections', {
+    await queryInterface.createTable('CollectionItems', {
       sn: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -12,17 +12,23 @@ module.exports = {
       },
       id: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4, // Or DataTypes.UUIDV1
+        defaultValue: Sequelize.UUIDV4, 
         primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
+      CollectionId: {
+            type: Sequelize.UUID,
+            allowNull: false,
+            references: { model: 'Collections', key: 'id' },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          },
+        ArchiveId: {
+            type: Sequelize.UUID,
+            allowNull: false,
+            references: { model: 'Archives', key: 'id' },
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        },
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
@@ -35,6 +41,6 @@ module.exports = {
   },
 
   async down(queryInterface: QueryInterface, Sequelize: any) {
-    await queryInterface.dropTable('Collections');
+    await queryInterface.dropTable('CollectionItems');
   }
 };

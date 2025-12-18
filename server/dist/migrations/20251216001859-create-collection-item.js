@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('Collections', {
+        await queryInterface.createTable('CollectionItems', {
             sn: {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
@@ -11,16 +11,22 @@ module.exports = {
             },
             id: {
                 type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4, // Or DataTypes.UUIDV1
+                defaultValue: Sequelize.UUIDV4,
                 primaryKey: true,
             },
-            name: {
-                type: Sequelize.STRING,
+            CollectionId: {
+                type: Sequelize.UUID,
                 allowNull: false,
+                references: { model: 'Collections', key: 'id' },
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE'
             },
-            description: {
-                type: Sequelize.TEXT,
+            ArchiveId: {
+                type: Sequelize.UUID,
                 allowNull: false,
+                references: { model: 'Archives', key: 'id' },
+                onDelete: 'CASCADE',
+                onUpdate: 'CASCADE'
             },
             createdAt: {
                 type: Sequelize.DATE,
@@ -33,6 +39,6 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('Collections');
+        await queryInterface.dropTable('CollectionItems');
     }
 };
