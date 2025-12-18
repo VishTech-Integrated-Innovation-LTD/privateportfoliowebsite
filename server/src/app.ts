@@ -19,6 +19,7 @@ import userRoutes from './routes/userRoutes';
 import itemRoutes from './routes/archiveItemRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import collectionRoutes from './routes/collectionRoutes';
+import draftRoutes from './routes/draftRoutes';
 
 
 
@@ -27,6 +28,7 @@ app.use('/auth', userRoutes);
 app.use('/archive-items', itemRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/collections', collectionRoutes);
+app.use('/drafts', draftRoutes);
 
 
 
