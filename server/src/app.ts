@@ -1,6 +1,9 @@
 // Importing express
 import express from 'express';
 
+// Importing cors for handling Cross-Origin Resource Sharing
+import cors from 'cors';
+
 // Importing dotenv to load env variables
 import dotenv from 'dotenv';
 
@@ -20,6 +23,18 @@ import itemRoutes from './routes/archiveItemRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import collectionRoutes from './routes/collectionRoutes';
 import draftRoutes from './routes/draftRoutes';
+
+
+
+// CORS options that allows to accept specific methods from a particular domain
+const corsOptions = {
+  origin: "http://localhost:5173",
+//   origin: `${process.env.VITE_FRONTEND_URL}`,
+  methods: ["POST", "GET", "PUT", "DELETE"],
+};
+
+// Enable CORS
+app.use(cors(corsOptions));
 
 
 
