@@ -17,7 +17,7 @@ const Footer = () => {
         { to: '/', label: 'Home' },
         { to: '/archives', label: 'Archives' },
         { to: "/collections", label: "Collections" },
-        { to: '/', label: 'About Me' }
+        { to: '#about', label: 'About Me' }
     ];
 
     return (
@@ -69,13 +69,13 @@ const Footer = () => {
                         <ul className="space-y-3">
                             {quickLinks.map(({ to, label }) => (
                                 <li key={label}>
-                                    <Link
-                                        to={to}
+                                    <a
+                                        href={to}
                                         className="text-[#F0F0F0] hover:text-[#FFD700] transition-colors text-sm flex items-center gap-2"
                                     >
                                         <span className="text-[#FFD700]">&rsaquo;</span>
                                         {label}
-                                    </Link>
+                                    </a>
                                 </li>
                             ))}
                         </ul>

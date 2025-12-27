@@ -24,7 +24,9 @@ const Home = () => {
       />
 
       {/* About Section */}
+      <section  id='about'>
       <AboutSection />
+      </section >
 
       {/* Contributions Section */}
       <ContributionsSection />
