@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Archive from '../models/Archive';
 import Collection from '../models/Collection';
 import CollectionItem from '../models/CollectionItem';
+import { Op } from 'sequelize';
 
 
 
@@ -101,7 +102,21 @@ export const createCollectionHandler = async (req: Request, res: Response) => {
 // ================================================
 export const getAllCollectionsHandler = async (req: Request, res: Response) => {
     try {
-        const collections = await Collection.findAll();
+        const { search } = req.query;
+
+        let whereClause = {};
+
+        if (search && typeof search === "string") {
+            whereClause = {
+                [Op.or]: [
+                    { name: { [Op.iLike]: `%${search}%` } },
+                    { description: { [Op.iLike]: `%${search}%` } }
+                ]
+            };
+        }
+        const collections = await Collection.findAll({
+            where: whereClause
+        });
         res.status(200).json({
             message: 'Collections retrieved successfully',
             count: collections.length,
@@ -157,17 +172,17 @@ export const updateCollectionHandler = async (req: Request, res: Response) => {
 
         // Find the collection
         const collection = await Collection.findByPk(id);
-        
+
         if (!collection) {
             return res.status(404).json({ message: 'Collection not found' });
         }
 
-          // If changing name, check if new name already exists
+        // If changing name, check if new name already exists
         if (name && name.trim() !== collection.name) {
             const existingCollection = await Collection.findOne({
                 where: { name: name.trim() }
             });
-            
+
             if (existingCollection) {
                 return res.status(400).json({ message: 'Collection name already exists' });
             }
@@ -179,11 +194,11 @@ export const updateCollectionHandler = async (req: Request, res: Response) => {
             description: description.trim()
         });
 
-         res.status(200).json({
+        res.status(200).json({
             message: 'Collection updated successfully',
             collection
         });
-      
+
 
     } catch (error) {
         console.error('Error updating collection:', error);

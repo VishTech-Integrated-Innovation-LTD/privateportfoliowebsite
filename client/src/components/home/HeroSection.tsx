@@ -33,7 +33,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
 
           {/* Info */}
-          <div className="flex-1 text-center md:text-left">
+          <div className="flex-1 text-center md:text-left text-[#333333]">
             <h1 className="text-4xl md:text-5xl font-bold text-text mb-2 uppercase tracking-wide">
               {name}
             </h1>

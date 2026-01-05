@@ -36,7 +36,7 @@ const Login = () => {
             localStorage.setItem("token", token); // Store the token
 
             // Navigate to admin dashboard
-            navigate('/');
+            navigate('/admin/dashboard');
         } catch (error) {
             console.error('Login failed', error);
         }

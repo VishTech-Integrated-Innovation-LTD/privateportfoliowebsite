@@ -23,7 +23,7 @@ const AboutSection = () => {
 
          {/* Story */}
         <div className="rounded-2xl border border-blue-100 p-8 md:p-12 shadow-2xl">
-            <p className="text-gray-700 leading-relaxed text-base md:text-lg">
+            <p className="text-[#333333] leading-relaxed text-base md:text-lg">
                 {bio}
             </p>
 

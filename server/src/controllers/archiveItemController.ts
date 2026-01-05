@@ -32,6 +32,26 @@ export const createArchiveItemHandler = async (req: Request, res: Response) => {
     try {
         const { title, description, CategoryId, visibility, isOnTheMainPage } = req.body;
 
+        // After getting title
+
+        const existingItem = await Archive.findOne({ where: { title } });
+
+        if (visibility === 'private') {
+
+            const existingDraft = await Draft.findOne({ where: { title } });
+
+            if (existingDraft) {
+
+                return res.status(400).json({ message: "A draft with this title already exists." });
+
+            }
+
+        } else if (existingItem) {
+
+            return res.status(400).json({ message: "An item with this title already exists." });
+
+        }
+
         // Validate file
         if (!req.file) {
             return res.status(400).json({ message: 'Media file is required' });
