@@ -6,6 +6,7 @@ import Header from "../../components/Header"
 import { FiAlertCircle, FiCheck, FiUpload, FiX } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaFileAlt } from "react-icons/fa";
 
 
 interface Category {
@@ -173,6 +174,37 @@ const UploadArchiveItem = () => {
     };
 
 
+    // Determine what to show in preview
+    const renderPreview = () => {
+        if (!file) return null;
+
+        const ext = file.name.split(".").pop()?.toLowerCase();
+
+        if (preview && (file.type.startsWith("image/") || ["mp4", "webm", "ogg"].includes(ext || ""))) {
+            if (file.type.startsWith("image/")) {
+                return <img src={preview} alt="Preview" className="max-h-96 mx-auto rounded-lg shadow-lg" />;
+            }
+            if (file.type.startsWith("video/")) {
+                return (
+                    <video controls className="max-h-96 mx-auto rounded-lg shadow-lg">
+                        <source src={preview} type={file.type} />
+                    </video>
+                );
+            }
+        }
+
+        // Default: Document icon
+        return (
+            <div className="text-center">
+                <FaFileAlt size={100} className="mx-auto text-[#0047AB]/70 mb-4" />
+                <p className="text-lg font-medium text-[#333333]">{file.name}</p>
+                <p className="text-sm text-gray-500">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+            </div>
+        );
+    };
+
 
     return (
         <section className="bg-[#F0F0F0]">
@@ -193,7 +225,7 @@ const UploadArchiveItem = () => {
                         className="bg-white rounded-2xl shadow-2xl border p-8 border-[#dfdcdc]"
                     >
                         {/* File Upload Area */}
-                        <div className="mb-8">
+                        {/* <div className="mb-8">
                             <label className="text-[#333333] font-semibold mb-4 text-lg block">
                                 Upload File <span className="text-red-500">*</span>
                             </label>
@@ -229,6 +261,57 @@ const UploadArchiveItem = () => {
                                         <p className="text-sm text-gray-500 mb-4">or</p>
                                         <label className="cursor-pointer">
                                             <span className="inline-block bg-[#0047AB] px-8 py-4 text-white font-semibold rounded-xl hover:bg-[#003380] transition">Choose File</span>
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx"
+                                                onChange={handleFileChange}
+                                                required
+                                            />
+                                        </label>
+                                    </div>
+                                )}
+
+                                {file && (
+                                    <p className="mt-4 text-sm text-gray-600">
+                                        Selected File: <strong>{file.name}</strong> ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                                    </p>
+                                )}
+                            </div>
+                        </div> */}
+
+                        <div className="mb-8">
+                            <label className="text-[#333333] font-semibold mb-4 text-lg block">
+                                Upload File <span className="text-red-500">*</span>
+                            </label>
+
+                            <div
+                                className={`border-4 border-dashed rounded-2xl p-12 text-center transition-all ${file ? "border-[#0047AB] bg-[#0047AB]/5" : "border-gray-300 hover:border-[#0047AB]"
+                                    }`}
+                            >
+                                {file ? (
+                                    <div className="relative">
+                                        {renderPreview()}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setFile(null);
+                                                setPreview(null);
+                                            }}
+                                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600"
+                                        >
+                                            <FiX size={20} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <FiUpload size={60} className="mb-4 mx-auto text-[#0047AB]" />
+                                        <p className="text-xl text-gray-600 mb-2">Drag & drop your file here</p>
+                                        <p className="text-sm text-gray-500 mb-4">or</p>
+                                        <label className="cursor-pointer">
+                                            <span className="inline-block bg-[#0047AB] px-8 py-4 text-white font-semibold rounded-xl hover:bg-[#003380] transition">
+                                                Choose File
+                                            </span>
                                             <input
                                                 type="file"
                                                 className="hidden"

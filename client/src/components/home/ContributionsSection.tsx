@@ -100,6 +100,7 @@ const ContributionsSection = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("")
+    const [filteredItems, setFilteredItems] = useState<ArchiveItem[]>([]);
 
     useEffect(() => {
         const fetchItems = async () => {
@@ -107,11 +108,11 @@ const ContributionsSection = () => {
                 setLoading(true);
 
                 // Only send search param if there's actual text (after trimming)
-                const params = searchTerm.trim() ? { search: searchTerm.trim() } : {};
+                // const params = searchTerm.trim() ? { search: searchTerm.trim() } : {};
 
                 const response = await axios.get(
                     `${import.meta.env.VITE_BACKEND_URL}/archive-items`,
-                    { params }
+                    // { params }
                 );
 
                 const fetchedItems = response.data;
@@ -132,12 +133,22 @@ const ContributionsSection = () => {
         };
 
         // Debounce: wait 500ms after user stops typing before fetching
-        const timer = setTimeout(fetchItems, 500);
+        // const timer = setTimeout(fetchItems, 500);
 
         // Cleanup: cancel the timer if searchTerm changes before 500ms
-        return () => clearTimeout(timer);
-        // fetchItems();
-    }, [searchTerm]);
+        // return () => clearTimeout(timer);
+        fetchItems();
+    }, []);
+
+    // For Search
+    useEffect(() => {
+        const filtered = items.filter(
+            (i) =>
+                i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                i.description.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredItems(filtered);
+    }, [items, searchTerm]);
 
 
     if (loading) return <div className="text-center py-20 text-gray-600">Loading contributions...</div>;
@@ -178,10 +189,16 @@ const ContributionsSection = () => {
 
                 {/* Archive Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                    {items.map((item) => (
+                    {filteredItems.length === 0 ? (
+                        <div className="col-span-full text-center py-20">
+                            <p className="text-2xl text-gray-600">
+                                {searchTerm ? `No contributions found for "${searchTerm}"` : "No contributions yet."}
+                            </p>
+                        </div>
+                    ) : (filteredItems.map((item) => (
                         <Link
                             key={item.id}
-                            to={`/archives/${item.id}`}
+                            to={`/archive-items/${item.id}`}
                             className="group bg-white block rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 duration-500 overflow-hidden"
                         >
                             {/* Media Preview */}
@@ -236,13 +253,13 @@ const ContributionsSection = () => {
                             </div>
 
                         </Link>
-                    ))}
+                    )))}
                 </div>
 
                 {/* View More Button */}
                 <div className="text-center">
                     <Link
-                        to="/archives"
+                        to="/archives-items"
                         // className="inline-block border-2 text-[#0047AB] rounded-full px-10 py-4 text-lg bg-[#FFD700] hover:text-white hover:bg-[#0047AB] transition-all font-semibold"
                         className="inline-block px-10 py-4 text-lg font-semibold text-[#0047AB] border-2 border-[#0047AB] rounded-full hover:bg-[#0047AB] hover:text-white transition-all duration-300 shadow-md hover:shadow-xl"
 

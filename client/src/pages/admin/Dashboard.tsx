@@ -308,8 +308,8 @@ const Dashboard = () => {
                         <button
                             onClick={() => setActiveTab("collections")}
                             className={`py-4 px-1 border-b-4 font-medium text-lg transition-all ${activeTab === "collections"
-                                    ? "border-[#0047AB] text-[#0047AB]"
-                                    : "border-transparent text-gray-500 hover:text-[#0047AB]"
+                                ? "border-[#0047AB] text-[#0047AB]"
+                                : "border-transparent text-gray-500 hover:text-[#0047AB]"
                                 }`}
                         >
                             Collections ({filteredCollections.length})
@@ -317,8 +317,8 @@ const Dashboard = () => {
                         <button
                             onClick={() => setActiveTab("items")}
                             className={`py-4 px-1 border-b-4 font-medium text-lg transition-all ${activeTab === "items"
-                                    ? "border-[#0047AB] text-[#0047AB]"
-                                    : "border-transparent text-gray-500 hover:text-[#0047AB]"
+                                ? "border-[#0047AB] text-[#0047AB]"
+                                : "border-transparent text-gray-500 hover:text-[#0047AB]"
                                 }`}
                         >
                             Archive Items ({archiveItems.length})
@@ -326,8 +326,8 @@ const Dashboard = () => {
                         <button
                             onClick={() => setActiveTab("drafts")}
                             className={`py-4 px-1 border-b-4 font-medium text-lg transition-all ${activeTab === "drafts"
-                                    ? "border-[#0047AB] text-[#0047AB]"
-                                    : "border-transparent text-gray-500 hover:text-[#0047AB]"
+                                ? "border-[#0047AB] text-[#0047AB]"
+                                : "border-transparent text-gray-500 hover:text-[#0047AB]"
                                 }`}
                         >
                             Drafts ({drafts.length})
@@ -436,26 +436,26 @@ const Dashboard = () => {
                                     {activeTab === "collections" ? (
                                         <FaFolder size={60} className="text-[#0047AB]/70" />
                                     ) : (
-                                        <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden">
-                                            {(item as ArchiveItem).mediaType === 'image' && (
+                                        <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden flex items-center justify-center">
+                                            {(item as ArchiveItem).mediaType === "image" ? (
                                                 <img
                                                     src={(item as ArchiveItem).cloudServiceUrl}
                                                     alt={(item as ArchiveItem).title}
                                                     className="w-full h-full object-cover"
                                                 />
-                                            )}
-                                            {(item as ArchiveItem).mediaType === 'video' && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-4"><FaVideo /></div>
+                                            ) : (item as ArchiveItem).mediaType === "video" ? (
+                                                <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
+                                                    <FaVideo />
                                                 </div>
-                                            )}
-                                            {(item as ArchiveItem).mediaType === 'document' && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-4"><FaFileAlt /></div>
+                                            ) : (
+                                                <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
+                                                    <FaFileAlt />
                                                 </div>
                                             )}
                                         </div>
                                     )}
+
+
 
                                     <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                     {activeTab === 'collections' && (
@@ -481,8 +481,8 @@ const Dashboard = () => {
                                     {activeTab !== "collections" && (
                                         <div className="flex items-center gap-3 mb-4">
                                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${(item as ArchiveItem).visibility === "public"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : "bg-orange-100 text-orange-800"
+                                                ? "bg-green-100 text-green-800"
+                                                : "bg-orange-100 text-orange-800"
                                                 }`}>
                                                 {(item as ArchiveItem).visibility === "public" ? "Public" : "Draft"}
                                             </span>

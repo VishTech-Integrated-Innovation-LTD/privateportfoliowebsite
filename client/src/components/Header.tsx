@@ -40,7 +40,7 @@ const Header = () => {
                         </Link>
 
                         <Link
-                            to="/archives"
+                            to="/archive-items"
                             className="flex items-center gap-2 hover:text-[#FFD700] transition-colors hover:border-b-2"
                         >
                             <FiArchive size={18} />
@@ -111,7 +111,7 @@ const Header = () => {
 
 
                             <Link
-                                to="/archives"
+                                 to="/archive-items"
                                 className="flex items-center gap-3 hover:text-[#FFD700] transition-colors py-2"
                                 onClick={() => setIsMenuOpen(false)}
                             >

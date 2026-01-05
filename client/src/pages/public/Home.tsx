@@ -1,11 +1,12 @@
-import Footer from '../components/Footer'
-import Header from '../components/Header'
-import AboutSection from '../components/home/AboutSection'
-import HeroSection from '../components/home/HeroSection'
+import Footer from '../../components/Footer'
+import Header from '../../components/Header'
+import AboutSection from '../../components/home/AboutSection'
+import HeroSection from '../../components/home/HeroSection'
 
 // import profileImage from '../assets/images/Folasade_Adepoju.jpg'
-import profileImage from '../assets/images/Folashade-960x750.jpg'
-import ContributionsSection from '../components/home/ContributionsSection'
+import profileImage from '../../assets/images/Folashade-960x750.jpg'
+// import profileImage from '../assets/images/Folashade-960x750.jpg'
+import ContributionsSection from '../../components/home/ContributionsSection'
 
 const Home = () => {
   
