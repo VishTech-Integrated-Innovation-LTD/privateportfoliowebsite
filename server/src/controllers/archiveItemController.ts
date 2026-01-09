@@ -6,6 +6,7 @@ import Archive from '../models/Archive';
 import Category from '../models/Category';
 import { Op } from 'sequelize';
 import Draft from '../models/Draft';
+import Collection from '../models/Collection';
 
 
 // Helper function to determine media type from MIME type
@@ -211,25 +212,94 @@ export const getArchiveItemsHandler = async (req: Request, res: Response) => {
 // @route GET /archive-items/:id
 // @access Public
 // ================================================
+// export const getArchiveItemByIdHandler = async (req: Request, res: Response) => {
+//     try {
+//         const { id } = req.params;
+
+//         const archiveItem = await Archive.findByPk(id);
+
+//         if (!archiveItem) {
+//             return res.status(404).json({ message: "Archive item not found" });
+//         }
+
+//         res.status(200).json({
+//             message: 'Archive Item retrieved/fetched successfully',
+//             item: archiveItem
+//         });
+//     } catch (error) {
+//         console.error('Error fetching archive item:', error);
+//         res.status(500).json({ message: 'Error fetching archive item...' });
+//     }
+// }
+
+
 export const getArchiveItemByIdHandler = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const archiveItem = await Archive.findByPk(id);
-
-        if (!archiveItem) {
-            return res.status(404).json({ message: "Archive item not found" });
+    const archiveItem = await Archive.findByPk(id, {
+      include: [
+        {
+          model: Collection,
+          through: { attributes: [] }, // Don't need junction table data
+          attributes: ['id', 'name'],
+          as: 'Collections' // Must match your belongsToMany alias
+        },
+        {
+          model: Category,
+          attributes: ['id', 'name']
         }
+      ]
+    });
 
-        res.status(200).json({
-            message: 'Archive Item retrieved/fetched successfully',
-            item: archiveItem
-        });
-    } catch (error) {
-        console.error('Error fetching archive item:', error);
-        res.status(500).json({ message: 'Error fetching archive item...' });
+    if (!archiveItem) {
+      return res.status(404).json({ message: "Archive item not found" });
     }
-}
+
+    res.status(200).json({
+      message: 'Archive Item retrieved successfully',
+      item: archiveItem
+    });
+  } catch (error) {
+    console.error('Error fetching archive item:', error);
+    res.status(500).json({ message: 'Error fetching archive item...' });
+  }
+};
+
+
+
+// export const getArchiveItemByIdHandler = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params;
+
+//     const archiveItem = await Archive.findByPk(id, {
+//       include: [
+//         {
+//           model: Collection,
+//           through: { attributes: [] }, // Don't need junction data
+//           attributes: ['id', 'name'],
+//           as: 'Collections'
+//         },
+//         {
+//           model: Category,
+//           attributes: ['id', 'name']
+//         }
+//       ]
+//     });
+
+//     if (!archiveItem) {
+//       return res.status(404).json({ message: "Archive item not found" });
+//     }
+
+//     res.status(200).json({
+//       message: 'Archive Item retrieved successfully',
+//       item: archiveItem
+//     });
+//   } catch (error) {
+//     console.error('Error fetching archive item:', error);
+//     res.status(500).json({ message: 'Error fetching archive item...' });
+//   }
+// };
 
 
 

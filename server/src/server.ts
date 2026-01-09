@@ -1,6 +1,8 @@
 // Importing app.js file
 import app from './app';
 
+import './models/index'; 
+
 // Defining the PORT the server will listen on 
 const PORT = process.env.PORT || 8000;
 

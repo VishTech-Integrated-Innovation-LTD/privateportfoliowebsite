@@ -259,7 +259,7 @@ const ContributionsSection = () => {
                 {/* View More Button */}
                 <div className="text-center">
                     <Link
-                        to="/archives-items"
+                        to="/archive-items"
                         // className="inline-block border-2 text-[#0047AB] rounded-full px-10 py-4 text-lg bg-[#FFD700] hover:text-white hover:bg-[#0047AB] transition-all font-semibold"
                         className="inline-block px-10 py-4 text-lg font-semibold text-[#0047AB] border-2 border-[#0047AB] rounded-full hover:bg-[#0047AB] hover:text-white transition-all duration-300 shadow-md hover:shadow-xl"
 

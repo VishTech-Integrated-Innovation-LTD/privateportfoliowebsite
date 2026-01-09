@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FiFilter, FiSearch } from "react-icons/fi";
 import Footer from "../../components/Footer";
@@ -39,17 +40,23 @@ const Archives = () => {
   const [filteredItems, setFilteredItems] = useState<ArchiveItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  
 
   // ---------------------------------->>>
-  // Fetch categories on mount
+  // Fetch categories and items on mount
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/categories`);
-        setCategories(res.data || []);
+        setLoading(true);
 
-        const response = await axios.get(`${API_BASE_URL}/archive-items`);
-        const publicItems = (response.data || []).filter((item: any) => item.visibility === "public");
+        // Fetch categories
+        const catRes = await axios.get(`${API_BASE_URL}/categories`);
+        setCategories(catRes.data || []);
+
+        // Fetch public archive items
+        const itemRes = await axios.get(`${API_BASE_URL}/archive-items`);
+        const publicItems = (itemRes.data || []).filter((item: any) => item.visibility === "public");
         setItems(publicItems);
         setFilteredItems(publicItems);
       } catch (err) {
@@ -64,14 +71,49 @@ const Archives = () => {
   // ---------------------------------->>>
 
   // For Search
+  // useEffect(() => {
+  //   const filtered = items.filter(
+  //     (i) =>
+  //       i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       i.description.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  //   setFilteredItems(filtered);
+  // }, [items, searchTerm]);
+
+
+// Refetch items when search or category changes
   useEffect(() => {
-    const filtered = items.filter(
-      (i) =>
-        i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        i.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredItems(filtered);
-  }, [items, searchTerm]);
+    const fetchFilteredItems = async () => {
+      try {
+        let url = `${API_BASE_URL}/archive-items`;
+        const params = new URLSearchParams();
+
+        if (selectedCategory) {
+          params.append("categoryId", selectedCategory);
+        }
+        if (searchTerm.trim()) {
+          params.append("search", searchTerm.trim());
+        }
+
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+
+        const res = await axios.get(url);
+        const publicItems = (res.data || []).filter(
+          (item: any) => item.visibility === "public"
+        );
+
+        setFilteredItems(publicItems);
+      } catch (err) {
+        console.error("Filter failed:", err);
+      }
+    };
+
+    fetchFilteredItems();
+  }, [searchTerm, selectedCategory]);
+
+
 
   // For capitalizing the first letter.
   const capitalizeFirstLetter = (str: string) => {
@@ -84,9 +126,9 @@ const Archives = () => {
   const getMediaIcon = (type: string) => {
     switch (type) {
       case "video":
-        return <FaVideo className="text-blue-600" size={40} />;
+        return <FaVideo className="text-blue-500" size={60} />;
       default:
-        return <FaFileAlt className="text-gray-600" size={40} />;
+        return <FaFileAlt className="text-blue-500" size={60} />;
     }
   };
 
@@ -136,7 +178,10 @@ const Archives = () => {
               {/* Category Filter */}
               <div className="flex items-center gap-3">
                 <FiFilter size={22} className="text-[#0047AB]" />
-                <select name="" className="bg-white rounded-xl border-2 border-[#d6d6d6] px-6 py-4 focus:border-[#0047AB] focus:outline-none">
+                <select 
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)} 
+                className="bg-white rounded-xl border-2 border-[#d6d6d6] px-6 py-4 focus:border-[#0047AB] focus:outline-none">
                   <option value="">Filter by category (All)</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>

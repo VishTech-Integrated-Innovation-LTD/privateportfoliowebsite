@@ -3,7 +3,8 @@ import Archive from '../models/Archive';
 import Collection from '../models/Collection';
 import CollectionItem from '../models/CollectionItem';
 import { Op } from 'sequelize';
-
+// import { sequelize } from "../db";
+import sequelize  from "../db";
 
 
 // ================================================
@@ -96,27 +97,62 @@ export const createCollectionHandler = async (req: Request, res: Response) => {
 
 
 // ================================================
-// @desc Get all collections with their archives
+// @desc Get all collections with their archives count
 // @route GET /collections
 // @access Public
 // ================================================
+// export const getAllCollectionsHandler = async (req: Request, res: Response) => {
+//     try {
+//         const { search } = req.query;
+
+//         let whereClause = {};
+
+//         if (search && typeof search === "string") {
+//             whereClause = {
+//                 [Op.or]: [
+//                     { name: { [Op.iLike]: `%${search}%` } },
+//                     { description: { [Op.iLike]: `%${search}%` } }
+//                 ]
+//             };
+//         }
+//         const collections = await Collection.findAll({
+//             where: whereClause,
+//         });
+
+//         res.status(200).json({
+//             message: 'Collections retrieved successfully',
+//             count: collections.length,
+//             collections
+//             // count: collectionsWithCount.length,
+// //   collections: collectionsWithCount
+//         });
+//     } catch (error) {
+//         console.error('Error fetching collections:', error);
+//         res.status(500).json({ message: 'Error fetching collections...' });
+//     }
+// }
+
+
 export const getAllCollectionsHandler = async (req: Request, res: Response) => {
     try {
         const { search } = req.query;
 
-        let whereClause = {};
-
+        let searchCondition = '';
         if (search && typeof search === "string") {
-            whereClause = {
-                [Op.or]: [
-                    { name: { [Op.iLike]: `%${search}%` } },
-                    { description: { [Op.iLike]: `%${search}%` } }
-                ]
-            };
+            searchCondition = `WHERE c.name ILIKE '%${search}%' OR c.description ILIKE '%${search}%'`;
         }
-        const collections = await Collection.findAll({
-            where: whereClause
-        });
+
+        const [collections] = await sequelize.query(`
+            SELECT 
+                c.*,
+                COUNT(ci."ArchiveId") as "itemCount"
+            FROM "Collections" c
+            LEFT JOIN "CollectionItems" ci ON c.id = ci."CollectionId"
+            ${searchCondition}
+            GROUP BY c.id
+            ORDER BY c."createdAt" DESC
+        `);
+
         res.status(200).json({
             message: 'Collections retrieved successfully',
             count: collections.length,

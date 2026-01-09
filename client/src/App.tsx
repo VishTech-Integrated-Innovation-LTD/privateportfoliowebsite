@@ -8,6 +8,7 @@ import UploadArchiveItem from "./pages/admin/UploadArchiveItem";
 import CreateCollection from "./pages/admin/CreateCollection";
 import ArchiveItemDetails from "./pages/public/ArchiveItemDetails";
 import Archives from "./pages/public/Archives";
+import Collections from "./pages/public/Collections";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
     <Route path="/collections/create" element={ < CreateCollection/> }/>
    <Route path="/archive-items/:id" element={ <ArchiveItemDetails /> }/>
    <Route path="/archive-items" element={ <Archives /> }/>
+   <Route path="/collections" element={ <Collections /> }/>
    </Routes>
   </>
   )

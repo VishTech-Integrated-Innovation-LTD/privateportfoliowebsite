@@ -1,5 +1,7 @@
 import { DataTypes, Model, ModelStatic } from "sequelize";
 import sequelize from "../db";
+import Archive from "./Archive";
+import Collection from "./Collection";
 
 // Define the attributes
 interface CollectionItemAttributes {
@@ -46,6 +48,13 @@ const CollectionItem = sequelize.define<CollectionItemInstance>(
     }
 );
 
+CollectionItem.belongsTo(Archive, { foreignKey: 'ArchiveId' });
+CollectionItem.belongsTo(Collection, { foreignKey: 'CollectionId' });
+
+// (CollectionItem as any).associate = (models: any) => {
+//   CollectionItem.belongsTo(models.Archive, { foreignKey: 'ArchiveId' });
+//   CollectionItem.belongsTo(models.Collection, { foreignKey: 'CollectionId' });
+// };
 
 
 export default CollectionItem;
