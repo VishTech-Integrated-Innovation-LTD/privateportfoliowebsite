@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Footer from "../../components/Footer"
 import Header from "../../components/Header"
 import { FiEdit2, FiPlus, FiSearch, FiTrash2, FiUpload } from "react-icons/fi"
@@ -71,6 +71,8 @@ const Dashboard = () => {
     const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
 
 
+
+    const navigate = useNavigate();
 
 
     //   Fetch all data
@@ -270,7 +272,6 @@ const Dashboard = () => {
 
 
 
-
     return (
         <section className="min-h-screen bg-[#F0F0F0]">
 
@@ -425,92 +426,121 @@ const Dashboard = () => {
                 {/* Items Grid */}
                 {!loading && !error && paginatedData.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                        {paginatedData.map((item) => (
-                            <div
-                                key={item.id}
-                                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border-[#dddbdb] group"
-                            >
-                                {/* Preview  */}
-                                <div className="h-48 flex items-center justify-center bg-linear-to-bl from-[#0047AB]/20 to-[#FFD700]/20 relative">
+                        {paginatedData.map((item) => {
+                            // const isCollection = activeTab === "collections";
+                            const linkTo = activeTab === "collections"
+                                ? `/collections/${item.id}`
+                                : activeTab === "items"
+                                    ? `/archive-items/${item.id}`
+                                    : `/drafts/${item.id}`
 
-                                    {activeTab === "collections" ? (
-                                        <FaFolder size={60} className="text-[#0047AB]/70" />
-                                    ) : (
-                                        <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden flex items-center justify-center">
-                                            {(item as ArchiveItem).mediaType === "image" ? (
-                                                <img
-                                                    src={(item as ArchiveItem).cloudServiceUrl}
-                                                    alt={(item as ArchiveItem).title}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (item as ArchiveItem).mediaType === "video" ? (
-                                                <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
-                                                    <FaVideo />
-                                                </div>
-                                            ) : (
-                                                <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
-                                                    <FaFileAlt />
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                            //  const linkTo = isCollection 
+                            // ? `/collections/${item.id}`
+                            // : `/archive-items/${item.id}`
+
+                            return (
+                                <Link
+                                    key={item.id}
+                                    to={linkTo}
+                                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border-[#dddbdb] group"
+                                >
+                                    {/* Preview  */}
+                                    <div className="h-48 flex items-center justify-center bg-linear-to-bl from-[#0047AB]/20 to-[#FFD700]/20 relative">
+
+                                        {activeTab === "collections" ? (
+                                            <FaFolder size={60} className="text-[#0047AB]/70" />
+                                        ) : (
+                                            <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden flex items-center justify-center">
+                                                {(item as ArchiveItem).mediaType === "image" ? (
+                                                    <img
+                                                        src={(item as ArchiveItem).cloudServiceUrl}
+                                                        alt={(item as ArchiveItem).title}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (item as ArchiveItem).mediaType === "video" ? (
+                                                    <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
+                                                        <FaVideo />
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
+                                                        <FaFileAlt />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
 
 
 
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    {activeTab === 'collections' && (
-                                        <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <p className="text-sm font-medium">View Items &#8594;</p>
-                                        </div>
-                                    )}
-                                </div>
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        {activeTab === 'collections' && (
+                                            <div className="absolute bottom-4 left-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <p className="text-sm font-medium">View Items &#8594;</p>
+                                            </div>
+                                        )}
+                                    </div>
 
-                                {/* Content */}
-                                <div className="p-6">
-                                    <h3 className="font-bold text-xl text-[#333333] mb-3">
-                                        {activeTab === "collections" ? (item as Collection).name : (item as ArchiveItem).title}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm mb-6 line-clamp-3">
-                                        {item.description || "No description added yet."}
-                                    </p>
+                                    {/* Content */}
+                                    <div className="p-6">
+                                        <h3 className="font-bold text-xl text-[#333333] mb-3">
+                                            {activeTab === "collections" ? (item as Collection).name : (item as ArchiveItem).title}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+                                            {item.description || "No description added yet."}
+                                        </p>
 
-                                    {/* <p className="text-sm font-medium text-[#797979] mb-6">
+                                        {/* <p className="text-sm font-medium text-[#797979] mb-6">
                                         {itemCount} archive item{itemCount !== 1 ? "s" : ""}
                                     </p> */}
 
-                                    {activeTab !== "collections" && (
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${(item as ArchiveItem).visibility === "public"
-                                                ? "bg-green-100 text-green-800"
-                                                : "bg-orange-100 text-orange-800"
-                                                }`}>
-                                                {(item as ArchiveItem).visibility === "public" ? "Public" : "Draft"}
-                                            </span>
-                                            {(item as ArchiveItem).isOnTheMainPage && (
-                                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#FFD700] text-[#333333]">
-                                                    Featured
+                                        {activeTab !== "collections" && (
+                                            <div className="flex items-center gap-3 mb-4">
+                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${(item as ArchiveItem).visibility === "public"
+                                                    ? "bg-green-100 text-green-800"
+                                                    : "bg-orange-100 text-orange-800"
+                                                    }`}>
+                                                    {(item as ArchiveItem).visibility === "public" ? "Public" : "Draft"}
                                                 </span>
-                                            )}
+                                                {(item as ArchiveItem).isOnTheMainPage && (
+                                                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-[#FFD700] text-[#333333]">
+                                                        Featured
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* 'Edit' and 'Delete' Buttons */}
+                                        <div className="flex justify-between items-center">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();  // Prevents card click/navigation
+                                                    const editPath = activeTab === "collections"
+                                                        ? `/collections/edit/${item.id}`
+                                                        : activeTab === "items"
+                                                            ? `/archive-items/edit/${item.id}`
+                                                            : `/drafts/edit/${item.id}`;
+                                                    navigate(editPath);
+                                                }}
+                                                className="flex items-center gap-2 text-[#0047AB] font-medium hover:underline">
+                                                <FiEdit2 size={18} />
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation(); // Prevents card click
+                                                    openDeleteModal(item)
+                                                }}
+                                                className="flex items-center gap-2 text-[#DC3545] font-medium hover:underline">
+                                                <FiTrash2 size={18} />
+                                                Delete
+                                            </button>
                                         </div>
-                                    )}
-
-                                    {/* 'Edit' and 'Delete' Buttons */}
-                                    <div className="flex justify-between items-center">
-                                        <button className="flex items-center gap-2 text-[#0047AB] font-medium hover:underline">
-                                            <FiEdit2 size={18} />
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => openDeleteModal(item)}
-                                            className="flex items-center gap-2 text-[#DC3545] font-medium hover:underline">
-                                            <FiTrash2 size={18} />
-                                            Delete
-                                        </button>
                                     </div>
-                                </div>
 
-                            </div>
-                        ))}
+                                </Link>
+                            )
+                        })}
                     </div>
                 )}
 

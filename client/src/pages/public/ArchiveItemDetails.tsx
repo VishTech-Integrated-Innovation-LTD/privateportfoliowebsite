@@ -20,6 +20,7 @@ interface ArchiveItem {
   mediaType: "image" | "video" | "document";
   cloudServiceUrl: string;
   createdAt: string;
+  updatedAt: string;
   isOnTheMainPage?: boolean;
   category?: string;
   Collections?: Collection[];
@@ -195,15 +196,25 @@ const ArchiveItemDetails = () => {
 
               {/* Metadata */}
               <div className="flex flex-wrap gap-8 text-gray-600 mb-10">
+                
                 <div className="flex items-center gap-3">
                   <FiCalendar size={22} />
                   <span className="font-medium">Uploaded on {formatDate(item.createdAt)}</span>
                 </div>
+
+                <div className="flex items-center gap-3">
+                  <FiCalendar size={22} />
+                  <span className="font-medium">Updated on {formatDate(item.updatedAt)}</span>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <FiTag size={22} />
                   <span className="font-medium capitalize">{item.mediaType}</span>
                 </div>
+                
               </div>
+
+              
 
 
               {/* Action Buttons */}

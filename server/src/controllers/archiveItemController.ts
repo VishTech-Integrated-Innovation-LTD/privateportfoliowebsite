@@ -268,45 +268,12 @@ export const getArchiveItemByIdHandler = async (req: Request, res: Response) => 
 
 
 
-// export const getArchiveItemByIdHandler = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params;
-
-//     const archiveItem = await Archive.findByPk(id, {
-//       include: [
-//         {
-//           model: Collection,
-//           through: { attributes: [] }, // Don't need junction data
-//           attributes: ['id', 'name'],
-//           as: 'Collections'
-//         },
-//         {
-//           model: Category,
-//           attributes: ['id', 'name']
-//         }
-//       ]
-//     });
-
-//     if (!archiveItem) {
-//       return res.status(404).json({ message: "Archive item not found" });
-//     }
-
-//     res.status(200).json({
-//       message: 'Archive Item retrieved successfully',
-//       item: archiveItem
-//     });
-//   } catch (error) {
-//     console.error('Error fetching archive item:', error);
-//     res.status(500).json({ message: 'Error fetching archive item...' });
-//   }
-// };
-
 
 
 
 // ================================================
 // @desc Edit/Update an archive item
-// @route PUT /archive-items/:id
+// @route PUT /archive-items/edit/:id
 // @access Private (Admin only)
 // ================================================
 export const updateArchiveItemHandler = async (req: Request, res: Response) => {

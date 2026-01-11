@@ -14,7 +14,10 @@ interface CollectionAttributes {
 }
 
 // Define the instance type
-interface CollectionInstance extends Model<CollectionAttributes>, CollectionAttributes { }
+interface CollectionInstance extends Model<CollectionAttributes>, CollectionAttributes {
+    addArchives: any;
+    removeArchives: any;
+}
 
 // Define Models object for associate
 // ModelStatic: a type representing a Sequelize model constructor 

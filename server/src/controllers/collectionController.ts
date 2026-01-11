@@ -166,82 +166,157 @@ export const getAllCollectionsHandler = async (req: Request, res: Response) => {
 
 
 
-
+// real
 // ================================================
-// @desc Get a single collection by ID
+// @desc Get a single collection by ID with its archive items
 // @route GET /collections/:id
 // @access Public
 // ================================================
+// export const getCollectionByIdHandler = async (req: Request, res: Response) => {
+//     try {
+//         const collectionId = req.params.id;
+
+//         const collection = await Collection.findByPk(collectionId);
+
+//         if (!collection) {
+//             res.status(404).json({ message: "Collection not found" });
+//             return;
+//         }
+
+//         res.status(200).json({
+//             message: 'Collection retrieved successfully',
+//             collection
+//         });
+//     } catch (error) {
+//         console.error('Error fetching collection:', error);
+//         res.status(500).json({ message: 'Error fetching collection...' });
+//     }
+// }
+
+
 export const getCollectionByIdHandler = async (req: Request, res: Response) => {
-    try {
-        const collectionId = req.params.id;
+  try {
+    const collectionId = req.params.id;
 
-        const collection = await Collection.findByPk(collectionId);
-
-        if (!collection) {
-            res.status(404).json({ message: "Collection not found" });
-            return;
+    const collection = await Collection.findByPk(collectionId, {
+      include: [
+        {
+          model: Archive,
+          as: 'Archives', // Must match the alias in belongsToMany
+          through: { attributes: [] }, // Don't need junction table data
+          attributes: ['id', 'title', 'description', 'mediaType', 'cloudServiceUrl', 'createdAt']
         }
+      ]
+    });
 
-        res.status(200).json({
-            message: 'Collection retrieved successfully',
-            collection
-        });
-    } catch (error) {
-        console.error('Error fetching collection:', error);
-        res.status(500).json({ message: 'Error fetching collection...' });
+    if (!collection) {
+      return res.status(404).json({ message: "Collection not found" });
     }
-}
 
+    // Convert to plain object (removes Sequelize metadata)
+    const plainCollection = collection.get({ plain: true }) as any;
+
+    res.status(200).json({
+      message: 'Collection retrieved successfully',
+      collection: {
+        ...plainCollection,
+        items: plainCollection.Archives || [] // ← This is what your frontend expects
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching collection:', error);
+    res.status(500).json({ message: 'Error fetching collection...' });
+  }
+};
 
 
 
 // ================================================
 // @desc Edit/Update a collection
-// @route PUT /collections/:id
+// @route PUT /collections/edit/:id
 // @access Private (Admin only)
 // ================================================
+// export const updateCollectionHandler = async (req: Request, res: Response) => {
+//     try {
+//         const { id } = req.params;
+//         const { name, description } = req.body;
+
+//         // Find the collection
+//         const collection = await Collection.findByPk(id);
+
+//         if (!collection) {
+//             return res.status(404).json({ message: 'Collection not found' });
+//         }
+
+//         // If changing name, check if new name already exists
+//         if (name && name.trim() !== collection.name) {
+//             const existingCollection = await Collection.findOne({
+//                 where: { name: name.trim() }
+//             });
+
+//             if (existingCollection) {
+//                 return res.status(400).json({ message: 'Collection name already exists' });
+//             }
+//         }
+
+//         // Update the collection
+//         await collection.update({
+//             name: name.trim(),
+//             description: description.trim()
+//         });
+
+//         res.status(200).json({
+//             message: 'Collection updated successfully',
+//             collection
+//         });
+
+
+//     } catch (error) {
+//         console.error('Error updating collection:', error);
+//         res.status(500).json({ message: 'Error updating collection...' });
+//     }
+// }
+
 export const updateCollectionHandler = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { name, description } = req.body;
+  try {
+    const { id } = req.params;
+    const { name, description, addItemIds = [], removeItemIds = [] } = req.body;
 
-        // Find the collection
-        const collection = await Collection.findByPk(id);
-
-        if (!collection) {
-            return res.status(404).json({ message: 'Collection not found' });
-        }
-
-        // If changing name, check if new name already exists
-        if (name && name.trim() !== collection.name) {
-            const existingCollection = await Collection.findOne({
-                where: { name: name.trim() }
-            });
-
-            if (existingCollection) {
-                return res.status(400).json({ message: 'Collection name already exists' });
-            }
-        }
-
-        // Update the collection
-        await collection.update({
-            name: name.trim(),
-            description: description.trim()
-        });
-
-        res.status(200).json({
-            message: 'Collection updated successfully',
-            collection
-        });
-
-
-    } catch (error) {
-        console.error('Error updating collection:', error);
-        res.status(500).json({ message: 'Error updating collection...' });
+    const collection = await Collection.findByPk(id);
+    if (!collection) {
+      return res.status(404).json({ message: 'Collection not found' });
     }
-}
 
+    // Update name/description if provided
+    if (name) collection.name = name.trim();
+    if (description !== undefined) collection.description = description.trim();
+
+    await collection.save();
+
+    // Handle item associations (many-to-many)
+    if (addItemIds.length > 0) {
+      const archives = await Archive.findAll({ where: { id: addItemIds } });
+      await collection.addArchives(archives);
+    }
+
+    if (removeItemIds.length > 0) {
+      await collection.removeArchives(removeItemIds);
+    }
+
+    // Reload with updated associations
+    const updatedCollection = await Collection.findByPk(id, {
+      include: [{ model: Archive, as: 'Archives' }],
+    });
+
+    res.status(200).json({
+      message: 'Collection updated successfully',
+      collection: updatedCollection,
+    });
+  } catch (error) {
+    console.error('Error updating collection:', error);
+    res.status(500).json({ message: 'Error updating collection...' });
+  }
+};
 
 
 // ================================================

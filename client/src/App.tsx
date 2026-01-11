@@ -9,6 +9,9 @@ import CreateCollection from "./pages/admin/CreateCollection";
 import ArchiveItemDetails from "./pages/public/ArchiveItemDetails";
 import Archives from "./pages/public/Archives";
 import Collections from "./pages/public/Collections";
+import CollectionDetails from "./pages/public/CollectionDetails";
+import EditArchiveItem from "./pages/admin/EditArchiveItem";
+import EditCollection from "./pages/admin/EditCollection";
 
 const App = () => {
   return (
@@ -22,6 +25,10 @@ const App = () => {
    <Route path="/archive-items/:id" element={ <ArchiveItemDetails /> }/>
    <Route path="/archive-items" element={ <Archives /> }/>
    <Route path="/collections" element={ <Collections /> }/>
+   <Route path="/collections/:id" element={ <CollectionDetails /> }/>
+   <Route path="/archive-items/edit/:id" element={ <EditArchiveItem /> }/>
+   <Route path="/collections/edit/:id" element={ <EditCollection /> }/>
+
    </Routes>
   </>
   )
