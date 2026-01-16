@@ -244,7 +244,7 @@ Authorization Header required
 | **Database** | [PostgreSQL](https://www.postgresql.org/) | Relational Data Storage |
 | **ORM** | [Sequelize](https://sequelize.org/) | Database Mapping and Migrations |
 | **Storage** | [Cloudinary](https://cloudinary.com/) | Cloud Asset Management |
-| **State** | [Zustand](https://github.com/pmndrs/zustand) | Lightweight Client State Management |
+<!-- | **State** | [Zustand](https://github.com/pmndrs/zustand) | Lightweight Client State Management | -->
 | **Language** | [TypeScript](https://www.typescriptlang.org/) | Type-safe Development |
 
 ## Usage
