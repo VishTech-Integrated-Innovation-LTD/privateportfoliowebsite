@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import { FiArrowLeft, FiSearch } from "react-icons/fi";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { FiArrowLeft, FiEdit2, FiPlus, FiSearch } from "react-icons/fi";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaBox, FaCalendar, FaFileAlt, FaFolder, FaVideo } from "react-icons/fa";
@@ -36,6 +36,12 @@ const CollectionDetails = () => {
   const [filteredItems, setFilteredItems] = useState<ArchiveItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+
+
+    // !! is a common JavaScript trick to convert truthy/falsy values into true or false.
+  // If a token exists; isAdmin = true
+  // Simple admin check 
+  const isAdmin = !!localStorage.getItem("token");
 
 
   useEffect(() => {
@@ -93,7 +99,7 @@ const CollectionDetails = () => {
     );
   }
 
-
+  
 
 
   return (
@@ -105,7 +111,7 @@ const CollectionDetails = () => {
       <div className="container mx-auto px-6 py-12 max-w-7xl">
         {/* Back Link */}
         <Link
-          to="/collections"
+          to={isAdmin ? "/admin/dashboard" : "/collections"}
           className="text-[#0047AB] inline-flex items-center gap-2 hover:underline font-medium text-lg"
         >
           <FiArrowLeft size={20} />
@@ -141,6 +147,28 @@ const CollectionDetails = () => {
                 Created {formatDate(collection?.createdAt)}
               </span>
             </div>
+
+            {/* Admin-only controls */}
+{isAdmin && (
+   <div className="flex items-center justify-center gap-6 mt-4">
+                  <Link
+                    to={`/collections/edit/${collection.id}`}
+                    className="flex items-center gap-3 px-8 py-4 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition-all shadow-lg font-medium text-lg"
+                  >
+                    <FiEdit2 size={25} />
+                    Edit Collection
+                  </Link>
+  
+                  <Link
+                    to="/archive-items/upload"
+                    className="flex items-center gap-3 px-8 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all shadow-lg font-medium text-lg"
+                  >
+                    <FiPlus size={30} />
+                    Add New Item
+                  </Link>
+                </div>
+)}
+
           </div>
         </div>
 

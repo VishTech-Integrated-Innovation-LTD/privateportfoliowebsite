@@ -194,6 +194,47 @@ export const getAllCollectionsHandler = async (req: Request, res: Response) => {
 // }
 
 
+// export const getCollectionByIdHandler = async (req: Request, res: Response) => {
+//   try {
+//     const collectionId = req.params.id;
+
+//     const collection = await Collection.findByPk(collectionId, {
+//       include: [
+//         {
+//           model: Archive,
+//           as: 'Archives', // Must match the alias in belongsToMany
+//           through: { attributes: [] }, // Don't need junction table data
+//           attributes: ['id', 'title', 'description', 'mediaType', 'cloudServiceUrl', 'createdAt']
+//         }
+//       ]
+//     });
+
+    
+//     if (!collection) {
+//       return res.status(404).json({ message: "Collection not found" });
+//     }
+
+//     // Convert to plain object (removes Sequelize metadata)
+//     const plainCollection = collection.get({ plain: true }) as any;
+
+//     res.status(200).json({
+//       message: 'Collection retrieved successfully',
+//       collection: {
+//         ...plainCollection,
+//         items: plainCollection.Archives || [] // This is what your frontend expects
+//       }
+//     });
+
+// console.log("Backend returned items:", collection.items);
+
+//   } catch (error) {
+//     console.error('Error fetching collection:', error);
+//     res.status(500).json({ message: 'Error fetching collection...' });
+//   }
+// };
+
+
+
 export const getCollectionByIdHandler = async (req: Request, res: Response) => {
   try {
     const collectionId = req.params.id;
@@ -202,8 +243,8 @@ export const getCollectionByIdHandler = async (req: Request, res: Response) => {
       include: [
         {
           model: Archive,
-          as: 'Archives', // Must match the alias in belongsToMany
-          through: { attributes: [] }, // Don't need junction table data
+          as: 'Archives', // your alias
+          through: { attributes: [] },
           attributes: ['id', 'title', 'description', 'mediaType', 'cloudServiceUrl', 'createdAt']
         }
       ]
@@ -213,15 +254,29 @@ export const getCollectionByIdHandler = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Collection not found" });
     }
 
-    // Convert to plain object (removes Sequelize metadata)
+    // Convert to plain object
     const plainCollection = collection.get({ plain: true }) as any;
+
+    // Rename "Archives" to "items" so frontend gets what it expects
+    const responseData = {
+      ...plainCollection,
+      items: plainCollection.Archives || []   // ← key change!
+    };
+
+    // Log AFTER renaming — should now show the array
+    console.log("Backend returned items:", responseData.items);
+
+    // Optional: more detailed log
+    console.log("Full collection response:", {
+      id: responseData.id,
+      name: responseData.name,
+      itemCount: responseData.items.length,
+      firstItemId: responseData.items[0]?.id || 'none'
+    });
 
     res.status(200).json({
       message: 'Collection retrieved successfully',
-      collection: {
-        ...plainCollection,
-        items: plainCollection.Archives || [] // ← This is what your frontend expects
-      }
+      collection: responseData   // ← send the renamed version
     });
   } catch (error) {
     console.error('Error fetching collection:', error);
@@ -312,6 +367,11 @@ export const updateCollectionHandler = async (req: Request, res: Response) => {
       message: 'Collection updated successfully',
       collection: updatedCollection,
     });
+
+    console.log("Received payload:", req.body);
+console.log("addItemIds:", addItemIds);
+console.log("removeItemIds:", removeItemIds);
+
   } catch (error) {
     console.error('Error updating collection:', error);
     res.status(500).json({ message: 'Error updating collection...' });

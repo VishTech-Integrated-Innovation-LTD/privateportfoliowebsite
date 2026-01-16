@@ -199,7 +199,7 @@ const ContributionsSection = () => {
                         <Link
                             key={item.id}
                             to={`/archive-items/${item.id}`}
-                            className="group bg-white block rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 duration-500 overflow-hidden"
+                            className="group bg-white block rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 duration-500 overflow-hidden flex flex-col h-full"
                         >
                             {/* Media Preview */}
                             <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden">
@@ -223,22 +223,24 @@ const ContributionsSection = () => {
                             </div>
 
                             {/* Card Content */}
-                            <div className="p-6">
+                            <div className="p-6 flex flex-col grow">
                                 {item.isOnTheMainPage && (
+                                    <div>
                                     <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-[#FFD700] rounded-full mb-3">
                                         Featured
                                     </span>
+                                    </div>
                                 )}
 
-                                <h3 className="text-xl font-bold text-[#0047AB] mb-2 group-hover:text-[#FFD700] transition-colors line-clamp-2">
+                                <h3 className="text-xl font-bold min-h-12 text-[#0047AB] mb-2 group-hover:text-[#FFD700] transition-colors line-clamp-2">
                                     {item.title}
                                 </h3>
 
-                                <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                                <p className="text-gray-600 text-sm grow leading-relaxed mb-4 line-clamp-3">
                                     {item.description}
                                 </p>
 
-                                <div className="flex justify-between items-center text-sm">
+                                <div className="flex justify-between items-center text-sm pt-4 border-t border-gray-100">
                                     <span className="text-gray-500">
                                         {new Date(item.createdAt).toLocaleDateString("en-US", {
                                             year: "numeric",

@@ -276,10 +276,106 @@ export const getArchiveItemByIdHandler = async (req: Request, res: Response) => 
 // @route PUT /archive-items/edit/:id
 // @access Private (Admin only)
 // ================================================
+// export const updateArchiveItemHandler = async (req: Request, res: Response) => {
+//     try {
+//         const { id } = req.params;
+//         const { title, description, CategoryId, visibility, isOnTheMainPage } = req.body;
+
+//         // Find the archive item
+//         const archiveItem = await Archive.findByPk(id);
+
+//         if (!archiveItem) {
+//             return res.status(404).json({ message: 'Archive item not found' });
+//         }
+
+//         // Validate file
+//         if (!req.file) {
+//             return res.status(400).json({ message: 'Media file is required' });
+//         }
+
+//         const file = req.file;
+//         const mediaType = getMediaTypeFromMimeType(file.mimetype);
+
+//         // Delete old file from Cloudinary
+//         if (archiveItem.cloudServiceUrl) {
+//             try {
+//                 const urlParts = archiveItem.cloudServiceUrl.split('/');
+//                 const uploadIndex = urlParts.indexOf('upload');
+//                 const publicIdWithExtension = urlParts.slice(uploadIndex + 2).join('/');
+//                 const publicId = publicIdWithExtension.substring(0, publicIdWithExtension.lastIndexOf('.'));
+
+//                 const resourceType = archiveItem.mediaType === 'video' ? 'video'
+//                     : archiveItem.mediaType === 'image' ? 'image'
+//                         : 'raw';
+
+//                 await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+//             } catch (cloudinaryError) {
+//                 console.error('Error deleting old file from Cloudinary:', cloudinaryError);
+//                 // Continue with upload even if deletion fails
+//             }
+//         }
+
+//         // Upload new file to Cloudinary
+//         const cloudinaryResult: any = await new Promise((resolve, reject) => {
+//             const folder =
+//                 mediaType === "image"
+//                     ? "archive-items/images"
+//                     : mediaType === "video"
+//                         ? "archive-items/videos"
+//                         : "archive-items/documents";
+
+//             const stream = cloudinary.uploader.upload_stream(
+//                 {
+//                     folder,
+//                     resource_type: mediaType === "video" ? "video"
+//                         : mediaType === "image" ? "image"
+//                             : "raw"
+//                 },
+//                 (error, result) => {
+//                     if (error) reject(error);
+//                     else resolve(result);
+//                 }
+//             );
+
+//             streamifier.createReadStream(file.buffer).pipe(stream);
+//         });
+
+//         const cloudServiceUrl = cloudinaryResult.secure_url;
+
+//         // Update the archive item
+//         await archiveItem.update({
+//             title: title || archiveItem.title,
+//             description: description || archiveItem.description,
+//             CategoryId: CategoryId || archiveItem.CategoryId,
+//             mediaType,
+//             visibility: visibility || archiveItem.visibility,
+//             isOnTheMainPage: isOnTheMainPage !== undefined ? isOnTheMainPage : archiveItem.isOnTheMainPage,
+//             cloudServiceUrl
+//         });
+
+//         res.status(200).json({
+//             message: 'Archive item updated successfully',
+//             item: archiveItem
+//         });
+//     } catch (error) {
+//         console.error('Error updating archive item:', error);
+//         res.status(500).json({ message: 'Error updating archive item...' });
+//     }
+// }
+
+
 export const updateArchiveItemHandler = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { title, description, CategoryId, visibility, isOnTheMainPage } = req.body;
+        const { 
+            title, 
+            description, 
+            CategoryId, 
+            visibility, 
+            isOnTheMainPage,
+            addCollectionIds = [],    // NEW: array of collection IDs to add
+      removeCollectionIds = [], // NEW: array of collection IDs to remove
+         } = req.body;
 
         // Find the archive item
         const archiveItem = await Archive.findByPk(id);
@@ -288,13 +384,18 @@ export const updateArchiveItemHandler = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Archive item not found' });
         }
 
+    // === File replacement – ONLY if a new file is uploaded ===
         // Validate file
-        if (!req.file) {
-            return res.status(400).json({ message: 'Media file is required' });
-        }
+        // if (!req.file) {
+        //     return res.status(400).json({ message: 'Media file is required' });
+        // }
 
+          let cloudServiceUrl = archiveItem.cloudServiceUrl;
+    let mediaType = archiveItem.mediaType;
+
+    if (req.file) {
         const file = req.file;
-        const mediaType = getMediaTypeFromMimeType(file.mimetype);
+        mediaType = getMediaTypeFromMimeType(file.mimetype);
 
         // Delete old file from Cloudinary
         if (archiveItem.cloudServiceUrl) {
@@ -340,7 +441,8 @@ export const updateArchiveItemHandler = async (req: Request, res: Response) => {
             streamifier.createReadStream(file.buffer).pipe(stream);
         });
 
-        const cloudServiceUrl = cloudinaryResult.secure_url;
+        cloudServiceUrl = cloudinaryResult.secure_url;
+    }
 
         // Update the archive item
         await archiveItem.update({
@@ -353,15 +455,37 @@ export const updateArchiveItemHandler = async (req: Request, res: Response) => {
             cloudServiceUrl
         });
 
-        res.status(200).json({
-            message: 'Archive item updated successfully',
-            item: archiveItem
-        });
+            // === NEW: Handle collection associations ===
+    if (addCollectionIds.length > 0) {
+      const collectionsToAdd = await Collection.findAll({
+        where: { id: addCollectionIds },
+      });
+      if (collectionsToAdd.length !== addCollectionIds.length) {
+        return res.status(400).json({ message: 'Some collection IDs are invalid' });
+      }
+      await archiveItem.addCollections(collectionsToAdd);
+    }
+
+    if (removeCollectionIds.length > 0) {
+      await archiveItem.removeCollections(removeCollectionIds);
+    }
+
+    // Reload item with updated collections
+    const updatedItem = await Archive.findByPk(id, {
+      include: [{ model: Collection, as: 'Collections' }],
+    });
+
+    res.status(200).json({
+      message: 'Archive item updated successfully',
+      item: updatedItem,
+    });
     } catch (error) {
         console.error('Error updating archive item:', error);
         res.status(500).json({ message: 'Error updating archive item...' });
     }
 }
+
+
 
 
 

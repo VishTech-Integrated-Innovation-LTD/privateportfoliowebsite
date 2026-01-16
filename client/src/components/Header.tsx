@@ -80,6 +80,7 @@ const Header = () => {
                                 to='/auth/login'
                                 className="bg-amber-400 hover:bg-[#FFD700] rounded font-medium transition-colors px-6 py-2 ml-4"
                             >
+                                {/* Admin? Login here */}
                                 Login
                             </Link>
                         )}

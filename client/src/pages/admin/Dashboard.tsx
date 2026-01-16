@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaFolder, FaVideo } from "react-icons/fa6";
 import { FaFileAlt } from "react-icons/fa";
+import Pagination from "../../components/Pagination";
 // import { it } from "node:test";
 
 
@@ -180,12 +181,12 @@ const Dashboard = () => {
     );
 
     // This function updates the current page and scrolls the viewport to the top for a better user experience.
-    const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-            window.scroll({ top: 0, behavior: 'smooth' });
-        }
-    };
+    // const handlePageChange = (page: number) => {
+    //     if (page >= 1 && page <= totalPages) {
+    //         setCurrentPage(page);
+    //         window.scroll({ top: 0, behavior: 'smooth' });
+    //     }
+    // };
 
     // ------------------------------->>
 
@@ -333,6 +334,18 @@ const Dashboard = () => {
                         >
                             Drafts ({drafts.length})
                         </button>
+
+                        {/* // Replace the drafts button with a Link */}
+                        {/* <Link
+  to="/drafts"
+  className={`py-4 px-1 border-b-4 font-medium text-lg transition-all ${
+    activeTab === "drafts"
+      ? "border-[#0047AB] text-[#0047AB]"
+      : "border-transparent text-gray-500 hover:text-[#0047AB]"
+  }`}
+>
+  Drafts ({drafts.length})
+</Link> */}
                     </nav>
                 </div>
 
@@ -442,20 +455,20 @@ const Dashboard = () => {
                                 <Link
                                     key={item.id}
                                     to={linkTo}
-                                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border-[#dddbdb] group"
+                                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border-[#dddbdb] flex flex-col h-full group"
                                 >
                                     {/* Preview  */}
-                                    <div className="h-48 flex items-center justify-center bg-linear-to-bl from-[#0047AB]/20 to-[#FFD700]/20 relative">
+                                    <div className="h-48 flex items-center justify-center bg-linear-to-bl from-[#0047AB]/20 to-[#FFD700]/20 relative overflow-hidden">
 
                                         {activeTab === "collections" ? (
                                             <FaFolder size={60} className="text-[#0047AB]/70" />
                                         ) : (
-                                            <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden flex items-center justify-center">
+                                            <div className="relative w-full h-full flex items-center justify-center">
                                                 {(item as ArchiveItem).mediaType === "image" ? (
                                                     <img
                                                         src={(item as ArchiveItem).cloudServiceUrl}
                                                         alt={(item as ArchiveItem).title}
-                                                        className="w-full h-full object-cover"
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                     />
                                                 ) : (item as ArchiveItem).mediaType === "video" ? (
                                                     <div className="text-6xl text-white bg-[#0047AB]/70 rounded-full p-6">
@@ -480,8 +493,8 @@ const Dashboard = () => {
                                     </div>
 
                                     {/* Content */}
-                                    <div className="p-6">
-                                        <h3 className="font-bold text-xl text-[#333333] mb-3">
+                                    <div className="p-6 flex flex-col grow">
+                                        <h3 className="font-bold text-xl text-[#333333] mb-3 line-clamp-3 min-h-18">
                                             {activeTab === "collections" ? (item as Collection).name : (item as ArchiveItem).title}
                                         </h3>
                                         <p className="text-gray-600 text-sm mb-6 line-clamp-3">
@@ -493,7 +506,7 @@ const Dashboard = () => {
                                     </p> */}
 
                                         {activeTab !== "collections" && (
-                                            <div className="flex items-center gap-3 mb-4">
+                                            <div className="flex items-center gap-3 mb-6 min-h-8">
                                                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${(item as ArchiveItem).visibility === "public"
                                                     ? "bg-green-100 text-green-800"
                                                     : "bg-orange-100 text-orange-800"
@@ -509,7 +522,7 @@ const Dashboard = () => {
                                         )}
 
                                         {/* 'Edit' and 'Delete' Buttons */}
-                                        <div className="flex justify-between items-center">
+                                        <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
                                             <button
                                                 onClick={(e) => {
                                                     e.preventDefault();
@@ -545,7 +558,7 @@ const Dashboard = () => {
                 )}
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {/* {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-3 mt-12">
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
@@ -553,10 +566,10 @@ const Dashboard = () => {
                             className="px-5 py-3 rounded-lg bg-white border border-[#d6d6d6] text-[#333333] font-medium hover:bg-[#0047AB] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition"
                         >
                             Previous
-                        </button>
+                        </button> */}
 
-                        {/* Page Numbers */}
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                {/* Page Numbers */}
+                {/* {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                             <button
                                 key={page}
                                 onClick={() => handlePageChange(page)}
@@ -577,7 +590,13 @@ const Dashboard = () => {
                             Next
                         </button>
                     </div>
-                )}
+                )} */}
+
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
 
 
             </div>

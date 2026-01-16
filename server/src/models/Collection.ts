@@ -15,6 +15,7 @@ interface CollectionAttributes {
 
 // Define the instance type
 interface CollectionInstance extends Model<CollectionAttributes>, CollectionAttributes {
+    [x: string]: any;
     addArchives: any;
     removeArchives: any;
 }

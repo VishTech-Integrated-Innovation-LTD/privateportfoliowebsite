@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaFolder } from "react-icons/fa";
+import Pagination from "../../components/Pagination";
 
 
 // interface Collection {
@@ -39,6 +40,9 @@ const Collections = () => {
         const [searchTerm, setSearchTerm] = useState("")
         const [filteredCollections, setFilteredCollections] = useState<Collection[]>([]);
 
+            const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 12;
+
     useEffect(() => {
         const fetchCollections = async () => {
             try {
@@ -64,6 +68,14 @@ const Collections = () => {
         setFilteredCollections(filtered);
     }, [collections, searchTerm]);
 
+
+
+
+const totalPages = Math.ceil(filteredCollections.length / itemsPerPage);
+const paginatedCollections = filteredCollections.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
 
 
     return (
@@ -105,15 +117,18 @@ const Collections = () => {
                     {/* Collections Grid */}
                     {loading ? (
                         <p className="text-center text-2xl text-gray-600 py-20">Loading collections...</p>
-                    ) : filteredCollections.length === 0 ? (
-                        <p className="text-center text-2xl text-gray-600 py-20">No collections available yet.</p>
+                    ) : paginatedCollections.length === 0 ? (
+                        <p className="text-center text-2xl text-gray-600 py-20">
+                            {/* No collections available yet. */}
+    {searchTerm ? `No collections found for "${searchTerm}"` : "No collections available yet."}
+                            </p>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
-                            {filteredCollections.map((collection) => (
+                            {paginatedCollections.map((collection) => (
                                 <Link
                                     to={`/collections/${collection.id}`}
                                     key={collection.id}
-                                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+                                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full"
                                 >
                                     <div className="relative h-80 bg-linear-to-br from-[#0047AB]/20 to-[#FFD700]/20 flex items-center justify-center">
 
@@ -135,14 +150,14 @@ const Collections = () => {
                                     </div>
 
                                     {/* Content */}
-                                    <div className="p-8">
-                                        <h2 className="text-2xl font-bold text-[#333333] mb-4 group-hover:text-[#0047AB] transition-colors">
+                                    <div className="p-8 flex flex-col grow">
+                                        <h2 className="text-2xl font-bold min-h-16 line-clamp-3 text-[#333333] mb-4 group-hover:text-[#0047AB] transition-colors">
                                             {collection.name}
                                         </h2>
-                                        <p className="text-gray-600 text-lg leading-relaxed ">
+                                        <p className="text-gray-600 grow text-lg leading-relaxed ">
                                             {collection.description}
                                         </p>
-                                        <div className="mt-6 flex items-center justify-between">
+                                        <div className="mt-6 flex items-center justify-between pt-4 border-t border-gray-100">
                                             <span className="text-sm text-gray-500">
                                                 Created{" "}
                                                 {collection.createdAt
@@ -161,6 +176,13 @@ const Collections = () => {
                             ))}
                         </div>
                     )}
+
+                    <Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={setCurrentPage}
+/>
+
 
                 </div>
             </div>

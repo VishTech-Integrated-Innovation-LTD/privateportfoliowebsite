@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaFileAlt, FaVideo } from "react-icons/fa";
+import Pagination from "../../components/Pagination";
 
 interface Category {
   id: string
@@ -42,6 +43,11 @@ const Archives = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   
+  // State for current page
+      const [currentPage, setCurrentPage] = useState(1);
+     
+      const itemsPerPage = 12;
+
 
   // ---------------------------------->>>
   // Fetch categories and items on mount
@@ -69,6 +75,17 @@ const Archives = () => {
   }, []);
 
   // ---------------------------------->>>
+
+
+  // For page pagination
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+const paginatedItems = filteredItems.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
+
+
+
 
   // For Search
   // useEffect(() => {
@@ -196,15 +213,18 @@ const Archives = () => {
           {/* Archives Grid */}
           {loading ? (
             <p className="text-center text-2xl text-gray-600">Loading archives...</p>
-          ) : filteredItems.length === 0 ? (
-            <p className="text-center text-2xl text-gray-600">No items found.</p>
+          ) : paginatedItems.length === 0 ? (
+            <p className="text-center text-2xl text-gray-600 py-20">
+              {/* No items found. */}
+    {searchTerm || selectedCategory ? "No matching items found." : "No archives found."}
+            </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {filteredItems.map((item) => (
+              {paginatedItems.map((item) => (
                 <Link
                   to={`/archive-items/${item.id}`}
                   key={item.id}
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full"
                 >
                   <div className="relative h-64 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/10">
                     {item.mediaType === "image" ? (
@@ -227,15 +247,15 @@ const Archives = () => {
                   </div>
 
                   {/* Title and Description */}
-                  <div className="p-6">
-                    <h3 className="font-bold text-xl text-[#333333] mb-2 line-clamp-2">
+                  <div className="p-6 flex flex-col grow">
+                    <h3 className="font-bold text-xl text-[#333333] mb-2 line-clamp-2 min-h-12">
                       {item.title}
                     </h3>
-                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                    <p className="text-gray-600 text-sm line-clamp-3 mb-4 grow">
                       {item.description || "No description available."}
                     </p>
 
-                    <div className="flex justify-between items-center text-sm">
+                    <div className="flex justify-between items-center text-sm pt-4 border-t border-gray-100">
                       <span className="text-gray-500">
                         {new Date(item.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
@@ -253,6 +273,13 @@ const Archives = () => {
               ))}
             </div>
           )}
+
+{/* Pagination component */}
+          <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          />
 
         </div>
       </div>

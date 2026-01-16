@@ -18,7 +18,11 @@ interface ArchiveAttributes {
 } 
 
 // Define the instance type
-interface ArchiveInstance extends Model<ArchiveAttributes>, ArchiveAttributes { }
+interface ArchiveInstance extends Model<ArchiveAttributes>, ArchiveAttributes {
+    [x: string]: any;
+    // addCollections(collections: CollectionInstance[]): unknown;
+    removeCollections(removeCollectionIds: any): unknown;
+}
 
 // Define Models object for associate
 // ModelStatic: a type representing a Sequelize model constructor 

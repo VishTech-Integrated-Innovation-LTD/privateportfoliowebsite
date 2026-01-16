@@ -131,7 +131,7 @@ export const getDraftByIdHandler = async (req: Request, res: Response) => {
 
 // ================================================
 // @desc Edit/Update a draft item
-// @route PUT /drafts/:id
+// @route PUT /drafts/edit/:id
 // @access Private (Admin only)
 // ================================================
 export const updateDraftItemHandler = async (req: Request, res: Response) => {
