@@ -257,7 +257,7 @@ The application is split into a Public View and an Administrative Dashboard.
    - Group existing archive items into "Collections" for curated viewing.
    - Edit existing metadata and feature items on the home hero section.
 
-## License
+<!-- ## License -->
 <!-- This project is licensed under the ISC License. -->
 
 ## Author Info
