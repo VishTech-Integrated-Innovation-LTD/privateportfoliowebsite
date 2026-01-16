@@ -258,7 +258,7 @@ The application is split into a Public View and an Administrative Dashboard.
    - Edit existing metadata and feature items on the home hero section.
 
 ## License
-This project is licensed under the ISC License.
+<!-- This project is licensed under the ISC License. -->
 
 ## Author Info
 **Temitope Alawode**
