@@ -17,7 +17,7 @@ const Footer = () => {
         { to: '/', label: 'Home' },
         { to: '/archive-items', label: 'Archives' },
         { to: "/collections", label: "Collections" },
-        { to: '#about', label: 'About Me' }
+        { to: '/#about', label: 'About Me' }
     ];
 
     return (
