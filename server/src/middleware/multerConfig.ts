@@ -7,7 +7,8 @@ const storage = multer.memoryStorage();
 
 const upload = multer({
     storage,
-    limits: { fileSize: 1024 * 1024 * 2 }, // Limit file size to 2MB
+    limits: { fileSize: 1024 * 1024 * 50 }, // Limit file size to 50MB
+    // limits: { fileSize: 1024 * 1024 * 2 }, // Limit file size to 2MB
 });
 
 // Export the Multer instance for use in routes
@@ -18,3 +19,8 @@ export default upload;
  * Processes the uploaded file and attaches it to req.file.
  */
 export const uploadMiddleware = upload.single('media');
+
+
+
+
+

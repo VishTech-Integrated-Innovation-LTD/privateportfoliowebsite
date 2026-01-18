@@ -7,6 +7,8 @@ import { FiAlertCircle, FiCheck, FiUpload, FiX } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaFileAlt } from "react-icons/fa";
+import imageCompression from 'browser-image-compression';
+import { ClipLoader } from "react-spinners";
 
 
 interface Category {
@@ -40,6 +42,12 @@ const UploadArchiveItem = () => {
 
     const [categories, setCategories] = useState<Category[]>([]);
 
+    // States for file compression
+    const [compressing, setCompressing] = useState(false);
+    const [compressionStatus, setCompressionStatus] = useState<string | null>(null);
+
+
+
     // ---------------------------------->>>
     // Fetch categories on mount
     useEffect(() => {
@@ -61,16 +69,63 @@ const UploadArchiveItem = () => {
     // Saves it to state
     // For images/videos: creates a preview so user can see it immediately
     // For documents (PDF, Word): no preview (just shows filename)
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0]
         if (!selectedFile) {
             return;
         }
 
-        setFile(selectedFile);
+        // setFile(selectedFile);
+        let fileToUse = selectedFile;
 
+
+        // Only compress images
         // Create preview for images and videos
-        if (selectedFile.type.startsWith("image/") || selectedFile.type.startsWith("video/")) {
+        if (selectedFile.type.startsWith("image/")) {
+            try {
+                setCompressing(true);
+                setCompressionStatus('Compressing image... Please wait');
+
+                const options = {
+                    maxSizeMB: 4,               // Target max 4 MB 
+                    maxWidthOrHeight: 1920,     // Reasonable max resolution
+                    useWebWorker: true,         // Offloads work to web worker (prevents UI freeze)
+                    fileType: 'image/webp',     // Modern, efficient format
+                }
+
+                const compressedFile = await imageCompression(selectedFile, options);
+
+                console.log(
+                    `Original: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB --|| Compressed: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`
+                );
+
+                fileToUse = compressedFile;
+
+                // Create preview from compressed file
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setPreview(reader.result as string);
+                };
+                reader.readAsDataURL(fileToUse);
+            } catch (error) {
+                console.error('Image compression failed:', error);
+                setMessage({ text: 'Failed to compress image - uploading original.', type: 'error' });
+                // Fall back to original file
+                fileToUse = selectedFile;
+            } finally {
+                setCompressing(false);
+                setCompressionStatus(null);
+            }
+        }
+        // Create preview for videos
+        else if (selectedFile.type.startsWith("video/")) {
+            if (selectedFile.size > 50 * 1024 * 1024) {
+                const typeLabel = fileToUse.type.startsWith('video/') ? 'video' : 'document';
+                setMessage({
+                    text: `Large ${typeLabel} detected (${(fileToUse.size / 1024 / 1024).toFixed(1)} MB). Upload may take longer - please select a lesser a file with lesser size.`,
+                    type: "error",
+                });
+            }
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreview(reader.result as string);
@@ -79,7 +134,17 @@ const UploadArchiveItem = () => {
         }
         else {
             setPreview(null); // No preview for documents
+
+            // Optional: warn on large non-image files
+            if (selectedFile.size > 50 * 1024 * 1024) {
+                const typeLabel = fileToUse.type.startsWith('video/') ? 'video' : 'document';
+                setMessage({
+                    text: `Large ${typeLabel} detected (${(fileToUse.size / 1024 / 1024).toFixed(1)} MB). Upload may take longer - please select a lesser a file with lesser size.`,
+                    type: "error",
+                });
+            }
         }
+        setFile(fileToUse);
     };
 
 
@@ -95,6 +160,16 @@ const UploadArchiveItem = () => {
             setMessage({ text: "Please select a file to upload.", type: "error" });
             return;
         }
+
+        // NEW: Hard client-side limit (matches backend Multer)
+        if (file.size > 50 * 1024 * 1024) {
+            setMessage({
+                text: "File is too large. Maximum allowed size is 50 MB.",
+                type: "error",
+            });
+            return;
+        }
+
 
         if (!formData.title.trim()) {
             setMessage({ text: "Title is required.", type: "error" });
@@ -285,6 +360,17 @@ const UploadArchiveItem = () => {
                                 Upload File <span className="text-red-500">*</span>
                             </label>
 
+                            {/* New guidance box */}
+                            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
+                                <p className="font-medium mb-1">File size guidelines:</p>
+                                <ul className="list-disc pl-5 space-y-1">
+                                    <li>Images: ideally under 5 MB(will automatically be compressed)</li>
+                                    <li>Videos: preferably under 50 MB(larger files may take longer to upload)</li>
+                                    <li>Documents (PDF, Word, etc.): up to 50 MB</li>
+                                    <li>Files over 50 MB will be rejected</li>
+                                </ul>
+                            </div>
+
                             <div
                                 className={`border-4 border-dashed rounded-2xl p-12 text-center transition-all ${file ? "border-[#0047AB] bg-[#0047AB]/5" : "border-gray-300 hover:border-[#0047AB]"
                                     }`}
@@ -326,10 +412,21 @@ const UploadArchiveItem = () => {
                                 {file && (
                                     <p className="mt-4 text-sm text-gray-600">
                                         Selected File: <strong>{file.name}</strong> ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                                        {file.size > 50 * 1024 * 1024 && (
+                                            <span className="text-red-600 ml-2 font-bold">&#8594; Large file - Upload a lesser file</span>
+                                        )}
                                     </p>
                                 )}
                             </div>
                         </div>
+
+                        {/* Show Compression Feedback */}
+                        {compressing && (
+                            <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-xl flex items-center gap-3">
+                                <ClipLoader size={24} color="#0047AB" />
+                                <span>{compressionStatus || 'Compressing image...'}</span>
+                            </div>
+                        )}
 
                         {/* Form fields */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -452,11 +549,14 @@ const UploadArchiveItem = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            disabled={uploading}
-                            className="w-full py-5 rounded-xl bg-[#0047AB] text-white text-xl font-bold flex items-center justify-center gap-3 hover:bg-[#003380] transition-all shadow-lg hover:shadow-xl cursor-pointer"
+                            disabled={uploading || compressing}
+                            className={`w-full py-5 rounded-xl bg-[#0047AB] text-white text-xl font-bold flex items-center justify-center gap-3 hover:bg-[#003380] transition-all shadow-lg hover:shadow-xl ${uploading || compressing
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "cursor-pointer"
+                                }`}
                         >
                             <FiUpload size={28} />
-                            {uploading ? "Uploading..." : "Upload Item"}
+                            {compressing ? 'Compressing...' : uploading ? "Uploading..." : "Upload Item"}
                         </button>
 
                         {/* Message */}

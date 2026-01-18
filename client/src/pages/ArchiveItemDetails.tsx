@@ -153,14 +153,57 @@ const ArchiveItemDetails = () => {
 
 
   // Download Function
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = item.cloudServiceUrl;
-    link.download = item.title || "archive-item";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // const handleDownload = () => {
+  //   const link = document.createElement("a");
+  //   link.href = item.cloudServiceUrl;
+  //   link.download = item.title || "archive-item";
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
+
+
+const handleDownload = () => {
+  let downloadUrl = item.cloudServiceUrl;
+
+  // Add Cloudinary download transformation
+  if (downloadUrl.includes('cloudinary.com')) {
+    // Insert 'fl_attachment' flag to force download
+    downloadUrl = downloadUrl.replace('/upload/', '/upload/fl_attachment/');
+  }
+
+  // Get proper file extension
+  let fileExtension = '';
+  if (item.mediaType === 'image') {
+    if (downloadUrl.includes('.png')) fileExtension = '.png';
+    else if (downloadUrl.includes('.jpg') || downloadUrl.includes('.jpeg')) fileExtension = '.jpg';
+    else if (downloadUrl.includes('.gif')) fileExtension = '.gif';
+    else fileExtension = '.jpg';
+  } else if (item.mediaType === 'video') {
+    if (downloadUrl.includes('.mp4')) fileExtension = '.mp4';
+    else if (downloadUrl.includes('.webm')) fileExtension = '.webm';
+    else fileExtension = '.mp4';
+  } else if (item.mediaType === 'document') {
+    if (downloadUrl.includes('.pdf')) fileExtension = '.pdf';
+    else if (downloadUrl.includes('.doc')) fileExtension = '.doc';
+    else fileExtension = '.pdf';
+  }
+
+  const filename = `${item.title}${fileExtension}`;
+
+  // Create and trigger download
+  const link = document.createElement("a");
+  link.href = downloadUrl;
+  link.download = filename;
+  link.target = "_blank";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+
+
 
   // Share Function
   const handleShare = async () => {

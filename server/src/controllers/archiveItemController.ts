@@ -7,6 +7,7 @@ import Category from '../models/Category';
 import { Op } from 'sequelize';
 import Draft from '../models/Draft';
 import Collection from '../models/Collection';
+import cache from '../utils/cache';
 
 
 // Helper function to determine media type from MIME type
@@ -158,6 +159,18 @@ export const getArchiveItemsHandler = async (req: Request, res: Response) => {
     try {
         // Get query parameters from the request (?...)
         const { categoryId, search } = req.query;
+
+    const cacheKey = `archive_items:${categoryId || 'all'}:${search || 'none'}`;  // Unique key
+
+    // Check cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`[CACHE HIT] Key: ${cacheKey} | Returned ${cachedData || 'unknown'} items`);
+        return res.status(200).json(cachedData);
+    }
+    console.log(`[CACHE MISS] Key: ${cacheKey} | Querying DB...`);
+
+    // DB query
         // whereClause object, which will be empty (fetch all archive items) if no categoryId is provided.
         // Object to store filtering conditions
         const whereClause: any = {};
@@ -197,6 +210,14 @@ export const getArchiveItemsHandler = async (req: Request, res: Response) => {
             return;
         }
 
+        // const response = { message: 'Success, archive items retrieved successfully', archives };
+
+        // Cache it - Store in cache
+        cache.set(cacheKey, archives);
+        // cache.set(cacheKey, response);
+    console.log(`[CACHE SET] Key: ${cacheKey} | Stored ${archives.length} items in cache`);
+
+        // res.status(200).json(response);
         res.status(200).json(archives);
     } catch (error) {
         console.error(error);
@@ -236,6 +257,16 @@ export const getArchiveItemsHandler = async (req: Request, res: Response) => {
 export const getArchiveItemByIdHandler = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+const cacheKey = `archive_item:${id}`;
+
+        const cachedData = cache.get(cacheKey);
+ if (cachedData) {
+      console.log(`[CACHE HIT] Key: ${cacheKey}`);
+            return res.status(200).json(cachedData);
+        }
+
+    console.log(`[CACHE MISS] Key: ${cacheKey} | Querying DB...`);
+
 
     const archiveItem = await Archive.findByPk(id, {
       include: [
@@ -256,10 +287,21 @@ export const getArchiveItemByIdHandler = async (req: Request, res: Response) => 
       return res.status(404).json({ message: "Archive item not found" });
     }
 
-    res.status(200).json({
+     // Prepare response object
+    const response = {
       message: 'Archive Item retrieved successfully',
       item: archiveItem
-    });
+    };
+
+    // Cache the entire response object (not just the item)
+    cache.set(cacheKey, response);
+
+      res.status(200).json(response);
+
+    // res.status(200).json({
+    //   message: 'Archive Item retrieved successfully',
+    //   item: archiveItem
+    // });
   } catch (error) {
     console.error('Error fetching archive item:', error);
     res.status(500).json({ message: 'Error fetching archive item...' });

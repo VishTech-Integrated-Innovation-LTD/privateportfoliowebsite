@@ -38,7 +38,7 @@ const CollectionDetails = () => {
   const [loading, setLoading] = useState(true);
 
 
-    // !! is a common JavaScript trick to convert truthy/falsy values into true or false.
+  // !! is a common JavaScript trick to convert truthy/falsy values into true or false.
   // If a token exists; isAdmin = true
   // Simple admin check 
   const isAdmin = !!localStorage.getItem("token");

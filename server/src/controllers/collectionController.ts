@@ -5,6 +5,7 @@ import CollectionItem from '../models/CollectionItem';
 import { Op } from 'sequelize';
 // import { sequelize } from "../db";
 import sequelize  from "../db";
+import cache from '../utils/cache';
 
 
 // ================================================
@@ -136,6 +137,16 @@ export const createCollectionHandler = async (req: Request, res: Response) => {
 export const getAllCollectionsHandler = async (req: Request, res: Response) => {
     try {
         const { search } = req.query;
+        const cacheKey = `collections:${search || 'none'}`;
+
+        // Check cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`[CACHE HIT] Key: ${cacheKey}`);
+            return res.status(200).json(cachedData);
+        }
+
+    console.log(`[CACHE MISS] Key: ${cacheKey} | Querying DB...`);
 
         let searchCondition = '';
         if (search && typeof search === "string") {
@@ -153,11 +164,16 @@ export const getAllCollectionsHandler = async (req: Request, res: Response) => {
             ORDER BY c."createdAt" DESC
         `);
 
-        res.status(200).json({
+        const response = {
             message: 'Collections retrieved successfully',
             count: collections.length,
             collections
-        });
+        };
+        
+ // Cache the entire response
+    cache.set(cacheKey, response);
+
+        res.status(200).json(response);
     } catch (error) {
         console.error('Error fetching collections:', error);
         res.status(500).json({ message: 'Error fetching collections...' });
@@ -238,6 +254,15 @@ export const getAllCollectionsHandler = async (req: Request, res: Response) => {
 export const getCollectionByIdHandler = async (req: Request, res: Response) => {
   try {
     const collectionId = req.params.id;
+    const cacheKey = `collection:${collectionId}`;
+
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`[CACHE HIT] Key: ${cacheKey}`);
+            return res.status(200).json(cachedData);
+        }
+
+    console.log(`[CACHE MISS] Key: ${cacheKey} | Querying DB...`);
 
     const collection = await Collection.findByPk(collectionId, {
       include: [
@@ -274,10 +299,16 @@ export const getCollectionByIdHandler = async (req: Request, res: Response) => {
       firstItemId: responseData.items[0]?.id || 'none'
     });
 
-    res.status(200).json({
+    // Prepare response object
+    const response = {
       message: 'Collection retrieved successfully',
       collection: responseData   // ← send the renamed version
-    });
+    }
+
+     // Cache the entire response
+    cache.set(cacheKey, response);
+
+    res.status(200).json(response);
   } catch (error) {
     console.error('Error fetching collection:', error);
     res.status(500).json({ message: 'Error fetching collection...' });

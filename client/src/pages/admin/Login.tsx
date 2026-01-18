@@ -78,6 +78,8 @@ const Login = () => {
                             type="text"
                             placeholder="ENTER YOUR USERNAME"
                             value={userName}
+                            // name="admin-username-random" // random/uncommon name tricks browser
+                            autoComplete="username"
                             onChange={(e) => setUserName(e.target.value)}
                             className="w-full border-2 bg-transparent pl-12 pr-4 py-3 border-white/40 rounded text-white placeholder-white/70 focus:outline-none focus:border-white"
                             required
@@ -94,6 +96,8 @@ const Login = () => {
                             type={showPassword ? 'text' : 'password'}
                             placeholder="ENTER YOUR PASSWORD"
                             value={password}
+                            // name="admin-password-random"
+                            autoComplete="new-password"
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full border-2 bg-transparent pl-12 pr-4 py-3 border-white/40 rounded text-white placeholder-white/70 focus:outline-none focus:border-white"
                             required
