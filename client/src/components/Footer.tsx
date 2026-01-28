@@ -17,7 +17,8 @@ const Footer = () => {
         { to: '/', label: 'Home' },
         { to: '/archive-items', label: 'Archives' },
         { to: "/collections", label: "Collections" },
-        { to: '/#about', label: 'About Me' }
+        { to: '/#about', label: 'About Me' },
+        { to: '/auth/login', label: 'Admin Login' }
     ];
 
     return (
@@ -37,7 +38,7 @@ const Footer = () => {
                                     <span className="text-3xl font-bold text-[#f0f0f0]">FA</span>
                                 </div>
                             </Link>
-                            <span className="text-xl font-bold">Folashade Adepoju</span>
+                            <span className="text-xl font-bold">Folasade Adepoju</span>
                         </div>
                         {/* Description */}
                         <p className="text-[#F0F0F0] text-sm leading-relaxed">
@@ -75,6 +76,11 @@ const Footer = () => {
                                     >
                                         <span className="text-[#FFD700]">&rsaquo;</span>
                                         {label}
+                                        {label === 'Admin Login' && (
+                                            <span className="ml-2 px-2 py-0.5 bg-amber-500/30 text-amber-300 text-xs rounded-full border border-amber-400/40">
+                                                Admin
+                                            </span>
+                                        )}
                                     </a>
                                 </li>
                             ))}
@@ -111,8 +117,15 @@ const Footer = () => {
             <div className="border-t border-white/10 mt-10">
                 <div className="container mx-auto px-4 py-6">
                     <p className="text-[#F0F0F0] text-sm text-center">
-                        &copy; {currentYear} Folashade Adepoju. All rights reserved. |
-                        <span className="ml-2 text-[#FFD700]">Private Portfolio</span>
+                        &copy; {currentYear} Folasade Adepoju. All rights reserved. |
+                        <span className="ml-2 text-[#FFD700]">
+                            <a
+                                target="_blank"
+                                href="https://vishtechinnovation.com.ng/contact-us/"
+                                className="hover:underline">
+                                Create yours here
+                            </a>
+                        </span>
                     </p>
                 </div>
             </div>
@@ -122,3 +135,13 @@ const Footer = () => {
 }
 
 export default Footer
+
+
+
+
+
+
+
+
+
+

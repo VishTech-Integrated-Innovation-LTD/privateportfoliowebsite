@@ -1,4 +1,4 @@
-# Folashade Adepoju Private Portfolio Archive
+# Folasade Adepoju Private Portfolio Archive
 
 ## Overview
 A high-performance monorepo application designed for secure multimedia documentation and personal archiving. This project leverages a TypeScript-based architecture with a React 19 frontend and a robust Express.js backend integrated with Sequelize ORM for sophisticated data modeling and Cloudinary for cloud-based asset management.

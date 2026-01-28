@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FiArchive, FiFolder, FiHome, FiLogOut, FiMenu, FiUser, FiX } from "react-icons/fi"
+import { FiArchive, FiFolder, FiHome, FiLogOut, FiMenu, FiMessageSquare, FiUser, FiX } from "react-icons/fi"
 import { Link, useNavigate } from "react-router-dom"
 
 const Header = () => {
@@ -16,6 +16,10 @@ const Header = () => {
         navigate('/');
         setIsMenuOpen(false);
     };
+
+    
+    // WhatsApp link
+    const whatsappLink = "https://wa.me/2341234567890?text=Hello%20Folasade,%20I'd%20like%20to%20talk%20to%20you...";
 
     return (
         <header className="sticky top-0 z-50 text-white bg-[#0047AB] font-[Roboto] min-h-[10vh] p-1 shadow-lg">
@@ -76,13 +80,18 @@ const Header = () => {
                             </div>
 
                         ) : (
-                            <Link
-                                to='/auth/login'
-                                className="bg-amber-400 hover:bg-[#FFD700] rounded font-medium transition-colors px-6 py-2 ml-4"
+                            <a
+                                href={whatsappLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-6 py-2 rounded-full ml-4 
+             transition-all duration-300 ease-in-out
+             hover:scale-105 hover:shadow-lg hover:shadow-amber-500/40
+             animate-bounce-slow flex items-center gap-2"
                             >
-                                {/* Admin? Login here */}
-                                Login
-                            </Link>
+                                <span>Talk to me</span>
+                                <FiMessageSquare size={20} />
+                            </a>
                         )}
 
                     </nav>
@@ -112,7 +121,7 @@ const Header = () => {
 
 
                             <Link
-                                 to="/archive-items"
+                                to="/archive-items"
                                 className="flex items-center gap-3 hover:text-[#FFD700] transition-colors py-2"
                                 onClick={() => setIsMenuOpen(false)}
                             >
@@ -150,19 +159,33 @@ const Header = () => {
                                     </button>
                                 </>
                             ) : (
-                                <Link
-                                    to="/auth/login"
-                                    className="bg-amber-400 hover:bg-[#FFD700] text-text px-4 py-3 rounded font-medium transition-colors text-center mt-2"
-                                    onClick={() => setIsMenuOpen(false)}
+                                <a
+                                    href={whatsappLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-6 py-3 rounded-full ml-4 
+             transition-all duration-300 ease-in-out
+             hover:scale-105 hover:shadow-xl hover:shadow-amber-500/50
+             animate-bounce-slow flex items-center justify-center gap-2"
                                 >
-                                    Login
-                                </Link>
+                                    <span>Talk to me</span>
+                                    <FiMessageSquare size={20} />
+                                </a>
                             )}
 
                         </nav>
                     </div>
                 )}
             </div>
+            <style>{`
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 3.5s infinite ease-in-out;
+        }
+      `}</style>
         </header>
     )
 }

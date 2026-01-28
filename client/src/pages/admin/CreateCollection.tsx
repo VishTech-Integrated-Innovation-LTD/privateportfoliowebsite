@@ -124,6 +124,7 @@ const CreateCollection = () => {
                     <div className="mb-8">
                         <h1 className="text-4xl font-bold text-[#333333] mb-2">Create New Collection</h1>
                         <p className="text-[#585656]">Group archive items into a meaningful collection.</p>
+                        <p className="text-blue-800 font-semibold pt-2 text-sm"> <span className="text-red-600">Note: </span>Archive items must have been uploaded to create a collection.</p>
                     </div>
 
                     <form

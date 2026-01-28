@@ -6,7 +6,7 @@ import Header from "../components/Header"
 import { FaFileAlt, FaVideo } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FiCalendar, FiDownload, FiEdit2, FiPlus, FiSave, FiShare2, FiTag, FiTrash2, FiX } from "react-icons/fi";
+import { FiCalendar, FiDownload, FiEdit2, FiPlus, FiSave, FiSettings, FiShare2, FiTag, FiTrash2, FiX } from "react-icons/fi";
 
 
 interface Collection {
@@ -61,7 +61,7 @@ const ArchiveItemDetails = () => {
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
 
-  // const [showAdminMenu, setShowAdminMenu] = useState(false);
+  const [showAdminMenu, setShowAdminMenu] = useState(false);
 
   // !! is a common JavaScript trick to convert truthy/falsy values into true or false.
   // If a token exists; isAdmin = true
@@ -453,7 +453,6 @@ const handleDownload = () => {
                       Delete
                     </button>
 
-                    {/* Add to Collection Button */}
                     <button
                       onClick={() => setShowAddModal(true)}
                       className="flex items-center gap-4 bg-green-600 text-white rounded-xl hover:bg-green-700 px-8 py-5 transition-all shadow-lg font-medium text-lg"
@@ -480,7 +479,7 @@ const handleDownload = () => {
     {showAdminMenu && (
       <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl z-10 border border-gray-200">
         <Link
-          to={`/admin/archive-items/edit/${item.id}`}
+          to={`/archive-items/edit/${item.id}`}
           className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 rounded-t-xl"
           onClick={() => setShowAdminMenu(false)}
         >

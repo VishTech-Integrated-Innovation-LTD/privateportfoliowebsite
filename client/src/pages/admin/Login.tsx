@@ -21,6 +21,7 @@ const Login = () => {
 
     // for redirecting after login success
     const navigate = useNavigate();
+    const currentYear = new Date().getFullYear()
 
     // Function to handle login form submission
     const handleLogin = async (e: React.FormEvent) => {
@@ -49,7 +50,8 @@ const Login = () => {
 
 
     return (
-        <section className="min-h-screen flex items-center justify-center bg-[#0047AB] font-[Roboto]">
+        <section className="min-h-screen flex flex-col bg-[#0047AB] font-[Roboto]">
+            <div className="items-center justify-center flex grow">
             <div className="w-full max-w-md">
                 {/* Logo Section */}
                 <div className="flex flex-col items-center mb-8">
@@ -124,11 +126,29 @@ const Login = () => {
 
                 </form>
 
-                {/* Footer */}
-                <div className="mt-8 text-center text-xs text-white/50">
-                    <p>&copy; {new Date().getFullYear()} Private Portfolio. All rights reserved.</p>
-                </div>
+                {/* Spacer to push footer to bottom */}
+          <div className="h-12" />
             </div>
+            </div>
+
+   {/* Bottom Bar - same as main Footer */}
+      <div className="border-t border-white/10">
+        <div className="container mx-auto px-4 py-6">
+          <p className="text-[#F0F0F0] text-sm text-center">
+            &copy; {currentYear} Folasade Adepoju. All rights reserved. | 
+            <span className="ml-2 text-[#FFD700]">
+              <a
+                target="_blank"
+                href="https://vishtechinnovation.com.ng/contact-us/"
+                className="hover:underline"
+              >
+                Create yours here
+              </a>
+            </span>
+          </p>
+        </div>
+      </div>
+
         </section>
     )
 }
