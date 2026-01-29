@@ -19,7 +19,8 @@ const Header = () => {
 
     
     // WhatsApp link
-    const whatsappLink = "https://wa.me/2341234567890?text=Hello%20Folasade,%20I'd%20like%20to%20talk%20to%20you...";
+    // const whatsappLink = "https://wa.me/2347040789324?text=Hello%20Folasade,%20I'd%20like%20to%20talk%20to%20you...";
+    const whatsappLink = " https://wa.link/g1rtam";
 
     return (
         <header className="sticky top-0 z-50 text-white bg-[#0047AB] font-[Roboto] min-h-[10vh] p-1 shadow-lg">
