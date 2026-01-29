@@ -6,4 +6,22 @@ const cache = new NodeCache({
     useClones: false  // Faster, since we don't mutate results
 });
 
+
+export const clearArchiveCache = () => {
+  cache.keys().forEach(key => {
+    if (key.startsWith('archive_items:') || key.startsWith('archive_item:')) {
+      cache.del(key);
+    }
+  });
+};
+
+export const clearCollectionsCache = () => {
+  cache.keys().forEach(key => {
+    if (key.startsWith('collections:') || key.startsWith('collection:')) {
+      cache.del(key);
+    }
+  });
+};
+
 export default cache;
+

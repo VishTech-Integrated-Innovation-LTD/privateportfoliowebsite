@@ -8,7 +8,7 @@ import { Op } from 'sequelize';
 import Draft from '../models/Draft';
 import Collection from '../models/Collection';
 import cache from '../utils/cache';
-
+import { clearArchiveCache } from '../utils/cache';
 
 // Helper function to determine media type from MIME type
 //  MIME type is detected from the actual file content (magic numbers/file signature), 
@@ -141,6 +141,11 @@ export const createArchiveItemHandler = async (req: Request, res: Response) => {
             item,
             savedTo: visibility === 'private' ? 'Drafts' : 'Archives'
         });
+
+                    // Clear all archive-item-related cache keys
+clearArchiveCache();
+   
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error Uploading item...' });
@@ -521,6 +526,10 @@ export const updateArchiveItemHandler = async (req: Request, res: Response) => {
       message: 'Archive item updated successfully',
       item: updatedItem,
     });
+
+    // Clear all archive-item-related cache keys
+clearArchiveCache();
+
     } catch (error) {
         console.error('Error updating archive item:', error);
         res.status(500).json({ message: 'Error updating archive item...' });
@@ -612,7 +621,12 @@ export const deleteArchiveItemHandler = async (req: Request, res: Response) => {
         // Delete from database
         await archiveItem.destroy();
 
-        return res.status(200).json({ message: "Archive item deleted successfully" });
+        res.status(200).json({ message: "Archive item deleted successfully" });
+        // return res.status(200).json({ message: "Archive item deleted successfully" });
+
+            // Clear all archive-item-related cache keys
+clearArchiveCache();
+        
     } catch (error) {
         console.error('Error deleting archive item:', error);
         return res.status(500).json({ message: 'Error deleting archive item...' });

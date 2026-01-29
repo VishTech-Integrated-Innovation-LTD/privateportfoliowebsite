@@ -6,6 +6,7 @@ import { Op } from 'sequelize';
 // import { sequelize } from "../db";
 import sequelize  from "../db";
 import cache from '../utils/cache';
+import { clearCollectionsCache } from '../utils/cache';
 
 
 // ================================================
@@ -88,6 +89,9 @@ export const createCollectionHandler = async (req: Request, res: Response) => {
             collection: completeCollection,
             collectionItems: collectionItems
         });
+
+        // Clear all collections-related cache keys
+clearCollectionsCache();
     } catch (error) {
         console.error('Error creating collection:', error);
         res.status(500).json({ message: 'Error creating a collection...' });
@@ -399,6 +403,9 @@ export const updateCollectionHandler = async (req: Request, res: Response) => {
       collection: updatedCollection,
     });
 
+    // Clear all collections-related cache keys
+clearCollectionsCache();
+
     console.log("Received payload:", req.body);
 console.log("addItemIds:", addItemIds);
 console.log("removeItemIds:", removeItemIds);
@@ -430,6 +437,9 @@ export const deleteCollectionHandler = async (req: Request, res: Response) => {
         await collection.destroy();
 
         res.status(200).json({ message: "Collection deleted successfully" });
+
+        // Clear all collections-related cache keys
+clearCollectionsCache();
     } catch (error) {
         console.error('Error deleting collection:', error);
         res.status(500).json({ message: 'Error deleting collection...' });

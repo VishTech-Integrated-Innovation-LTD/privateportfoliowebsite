@@ -77,8 +77,7 @@ const Dashboard = () => {
 
 
     //   Fetch all data
-    useEffect(() => {
-        const fetchData = async () => {
+const fetchData = async () => {
             try {
                 setLoading(true);
                 setError(null);
@@ -117,8 +116,11 @@ const Dashboard = () => {
             }
         };
 
+    useEffect(() => {
         fetchData();
     }, [])
+
+
 
     // Search across current tab
     // Live search with debounce
