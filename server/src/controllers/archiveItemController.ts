@@ -491,6 +491,41 @@ export const updateArchiveItemHandler = async (req: Request, res: Response) => {
         cloudServiceUrl = cloudinaryResult.secure_url;
     }
 
+     // === NEW: Move to Draft if visibility changed to private ===
+    if (visibility === 'private' && archiveItem.visibility === 'public') {
+      // Create in Draft table
+      const draftItem = await Draft.create({
+        title: title || archiveItem.title,
+        description: description || archiveItem.description,
+        CategoryId: CategoryId || archiveItem.CategoryId,
+        mediaType,
+        visibility: 'private',
+        cloudServiceUrl
+      });
+
+      // Handle collections (if any)
+    //   if (addCollectionIds.length > 0) {
+    //     const collectionsToAdd = await Collection.findAll({ where: { id: addCollectionIds } });
+    //     await draftItem.addCollections(collectionsToAdd);
+    //   }
+      if (removeCollectionIds.length > 0) {
+        await draftItem.removeCollections(removeCollectionIds);
+      }
+
+      // Delete from Archive
+      await archiveItem.destroy();
+
+      // Clear cache
+      clearArchiveCache();
+
+      return res.status(200).json({
+        message: 'Item moved to Drafts successfully',
+        item: draftItem,
+        movedTo: 'Drafts'
+      });
+    }
+
+    // === Normal update (no move) ===
         // Update the archive item
         await archiveItem.update({
             title: title || archiveItem.title,
@@ -535,7 +570,6 @@ clearArchiveCache();
         res.status(500).json({ message: 'Error updating archive item...' });
     }
 }
-
 
 
 

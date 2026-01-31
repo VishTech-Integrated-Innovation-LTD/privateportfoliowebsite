@@ -134,115 +134,200 @@ export const getDraftByIdHandler = async (req: Request, res: Response) => {
 // @route PUT /drafts/edit/:id
 // @access Private (Admin only)
 // ================================================
+
+// export const updateDraftItemHandler = async (req: Request, res: Response) => {
+//     try {
+//         const { id } = req.params;
+//         const { title, description, CategoryId, visibility } = req.body;
+
+//         // Find the draft item
+//         const draftItem = await Draft.findByPk(id);
+
+//         if (!draftItem) {
+//             return res.status(404).json({ message: 'Draft item not found' });
+//         }
+
+//         // Validate file
+//         if (!req.file) {
+//             return res.status(400).json({ message: 'Media file is required' });
+//         }
+
+//         const file = req.file;
+//         const mediaType = getMediaTypeFromMimeType(file.mimetype);
+
+//         // Delete old file from Cloudinary
+//         if (draftItem.cloudServiceUrl) {
+//             try {
+//                 const urlParts = draftItem.cloudServiceUrl.split('/');
+//                 const uploadIndex = urlParts.indexOf('upload');
+//                 const publicIdWithExtension = urlParts.slice(uploadIndex + 2).join('/');
+//                 const publicId = publicIdWithExtension.substring(0, publicIdWithExtension.lastIndexOf('.'));
+
+//                 const resourceType = draftItem.mediaType === 'video' ? 'video'
+//                     : draftItem.mediaType === 'image' ? 'image'
+//                         : 'raw';
+
+//                 await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+//             } catch (cloudinaryError) {
+//                 console.error('Error deleting old file from Cloudinary:', cloudinaryError);
+//                 // Continue with upload even if deletion fails
+//             }
+//         }
+
+//         // Upload new file to Cloudinary
+//         const cloudinaryResult: any = await new Promise((resolve, reject) => {
+//             const folder =
+//                 mediaType === "image"
+//                     ? "archive-items/images"
+//                     : mediaType === "video"
+//                         ? "archive-items/videos"
+//                         : "archive-items/documents";
+
+//             const stream = cloudinary.uploader.upload_stream(
+//                 {
+//                     folder,
+//                     resource_type: mediaType === "video" ? "video"
+//                         : mediaType === "image" ? "image"
+//                             : "raw"
+//                 },
+//                 (error, result) => {
+//                     if (error) reject(error);
+//                     else resolve(result);
+//                 }
+//             );
+
+//             streamifier.createReadStream(file.buffer).pipe(stream);
+//         });
+
+//         const cloudServiceUrl = cloudinaryResult.secure_url;
+
+
+
+//         // If visibility is changing to 'public', move to Archive table
+//         if (visibility && visibility !== 'private') {
+//             // Create in Archive table
+//             const archiveItem = await Archive.create({
+//                 title: title || draftItem.title,
+//                 description: description || draftItem.description,
+//                 CategoryId: CategoryId || draftItem.CategoryId,
+//                 mediaType: draftItem.mediaType,
+//                 visibility: visibility,
+//                 isOnTheMainPage: false, // Default to false when publishing
+//                 cloudServiceUrl
+//             });
+
+//             // Delete from Draft table
+//             await draftItem.destroy();
+
+//             return res.status(200).json({
+//                 message: 'Draft item published successfully',
+//                 item: archiveItem,
+//                 movedTo: 'Archives'
+//             });
+//         }
+
+//         // If it's still a draft, just update it
+//         await draftItem.update({
+//             title: title || draftItem.title,
+//             description: description || draftItem.description,
+//             CategoryId: CategoryId || draftItem.CategoryId,
+//             visibility: 'private', // Drafts are always private
+//             cloudServiceUrl
+//         });
+
+//         res.status(200).json({
+//             message: 'Draft item updated successfully',
+//             item: draftItem
+//         });
+//     } catch (error) {
+//         console.error('Error updating draft item:', error);
+//         res.status(500).json({ message: 'Error updating draft item...' });
+//     }
+// }
+
+
+
 export const updateDraftItemHandler = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { title, description, CategoryId, visibility } = req.body;
+  try {
+    const { id } = req.params;
+    const { title, description, CategoryId, visibility } = req.body;
 
-        // Find the draft item
-        const draftItem = await Draft.findByPk(id);
-
-        if (!draftItem) {
-            return res.status(404).json({ message: 'Draft item not found' });
-        }
-
-        // Validate file
-        if (!req.file) {
-            return res.status(400).json({ message: 'Media file is required' });
-        }
-
-        const file = req.file;
-        const mediaType = getMediaTypeFromMimeType(file.mimetype);
-
-        // Delete old file from Cloudinary
-        if (draftItem.cloudServiceUrl) {
-            try {
-                const urlParts = draftItem.cloudServiceUrl.split('/');
-                const uploadIndex = urlParts.indexOf('upload');
-                const publicIdWithExtension = urlParts.slice(uploadIndex + 2).join('/');
-                const publicId = publicIdWithExtension.substring(0, publicIdWithExtension.lastIndexOf('.'));
-
-                const resourceType = draftItem.mediaType === 'video' ? 'video'
-                    : draftItem.mediaType === 'image' ? 'image'
-                        : 'raw';
-
-                await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
-            } catch (cloudinaryError) {
-                console.error('Error deleting old file from Cloudinary:', cloudinaryError);
-                // Continue with upload even if deletion fails
-            }
-        }
-
-        // Upload new file to Cloudinary
-        const cloudinaryResult: any = await new Promise((resolve, reject) => {
-            const folder =
-                mediaType === "image"
-                    ? "archive-items/images"
-                    : mediaType === "video"
-                        ? "archive-items/videos"
-                        : "archive-items/documents";
-
-            const stream = cloudinary.uploader.upload_stream(
-                {
-                    folder,
-                    resource_type: mediaType === "video" ? "video"
-                        : mediaType === "image" ? "image"
-                            : "raw"
-                },
-                (error, result) => {
-                    if (error) reject(error);
-                    else resolve(result);
-                }
-            );
-
-            streamifier.createReadStream(file.buffer).pipe(stream);
-        });
-
-        const cloudServiceUrl = cloudinaryResult.secure_url;
-
-
-
-        // If visibility is changing to 'public', move to Archive table
-        if (visibility && visibility !== 'private') {
-            // Create in Archive table
-            const archiveItem = await Archive.create({
-                title: title || draftItem.title,
-                description: description || draftItem.description,
-                CategoryId: CategoryId || draftItem.CategoryId,
-                mediaType: draftItem.mediaType,
-                visibility: visibility,
-                isOnTheMainPage: false, // Default to false when publishing
-                cloudServiceUrl
-            });
-
-            // Delete from Draft table
-            await draftItem.destroy();
-
-            return res.status(200).json({
-                message: 'Draft item published successfully',
-                item: archiveItem,
-                movedTo: 'Archives'
-            });
-        }
-
-        // If it's still a draft, just update it
-        await draftItem.update({
-            title: title || draftItem.title,
-            description: description || draftItem.description,
-            CategoryId: CategoryId || draftItem.CategoryId,
-            visibility: 'private', // Drafts are always private
-            cloudServiceUrl
-        });
-
-        res.status(200).json({
-            message: 'Draft item updated successfully',
-            item: draftItem
-        });
-    } catch (error) {
-        console.error('Error updating draft item:', error);
-        res.status(500).json({ message: 'Error updating draft item...' });
+    // Find the draft item
+    const draftItem = await Draft.findByPk(id);
+    if (!draftItem) {
+      return res.status(404).json({ message: 'Draft item not found' });
     }
-}
+
+    let cloudServiceUrl = draftItem.cloudServiceUrl;
+    let mediaType = draftItem.mediaType;
+
+    // === File replacement – ONLY if a new file is uploaded ===
+    if (req.file) {
+      const file = req.file;
+      mediaType = getMediaTypeFromMimeType(file.mimetype);
+
+      // Delete old file from Cloudinary (if exists)
+      if (draftItem.cloudServiceUrl) {
+        try {
+          const urlParts = draftItem.cloudServiceUrl.split('/');
+          const uploadIndex = urlParts.indexOf('upload');
+          const publicIdWithExtension = urlParts.slice(uploadIndex + 2).join('/');
+          const publicId = publicIdWithExtension.substring(0, publicIdWithExtension.lastIndexOf('.'));
+
+          const resourceType =
+            draftItem.mediaType === 'video' ? 'video'
+            : draftItem.mediaType === 'image' ? 'image'
+            : 'raw';
+
+          await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+        } catch (cloudinaryError) {
+          console.error('Error deleting old file from Cloudinary:', cloudinaryError);
+          // Continue even if deletion fails
+        }
+      }
+
+      // Upload new file
+      const cloudinaryResult: any = await new Promise((resolve, reject) => {
+        const folder =
+          mediaType === "image" ? "archive-items/images"
+          : mediaType === "video" ? "archive-items/videos"
+          : "archive-items/documents";
+
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder,
+            resource_type: mediaType === "video" ? "video"
+              : mediaType === "image" ? "image"
+              : "raw"
+          },
+          (error, result) => error ? reject(error) : resolve(result)
+        );
+
+        streamifier.createReadStream(file.buffer).pipe(stream);
+      });
+
+      cloudServiceUrl = cloudinaryResult.secure_url;
+    }
+
+    // Update draft (file fields only change if new file was uploaded)
+    await draftItem.update({
+      title: title || draftItem.title,
+      description: description || draftItem.description,
+      CategoryId: CategoryId || draftItem.CategoryId,
+      mediaType,           // only changes if new file
+      visibility: 'private', // drafts stay private
+      cloudServiceUrl      // only changes if new file
+    });
+
+    res.status(200).json({
+      message: 'Draft item updated successfully',
+      item: draftItem
+    });
+  } catch (error) {
+    console.error('Error updating draft item:', error);
+    res.status(500).json({ message: 'Error updating draft item...' });
+  }
+};
 
 
 

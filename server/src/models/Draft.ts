@@ -15,7 +15,10 @@ interface DraftAttributes {
 }
 
 // Define the instance type
-interface DraftInstance extends Model<DraftAttributes>, DraftAttributes { }
+interface DraftInstance extends Model<DraftAttributes>, DraftAttributes {
+    removeCollections(removeCollectionIds: any): unknown;
+    // addCollections(collectionsToAdd: CollectionInstance[]): unknown;
+}
 
 // Define the base model and cast after defining
 const Draft = sequelize.define<DraftInstance>(
