@@ -29,10 +29,39 @@ const Collection = db_1.default.define("Collection", {
     timestamps: true,
 });
 // Extend the model with `associate`
+// (Collection as typeof Collection & { associate?: (models: Models) => void }).associate = (models: Models) => {
+//   Collection.hasMany(models.CollectionItem, {
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE'
+//   });
+// Add belongsToMany association
+//   Collection.belongsToMany(models.Archive, {
+//     through: models.CollectionItem,
+//     foreignKey: 'CollectionId',
+//     otherKey: 'ArchiveId',
+//     as: 'Archives'
+//   });
+// };
+// (Collection as any).associate = (models: any) => {
+// //   Collection.hasMany(models.CollectionItem, { foreignKey: 'CollectionId' });
+//   Collection.belongsToMany(models.Archive, {
+//     through: models.CollectionItem,
+//     foreignKey: 'CollectionId',
+//     otherKey: 'ArchiveId',
+//     as: 'Archives'
+//   });
+// };
 Collection.associate = (models) => {
     Collection.hasMany(models.CollectionItem, {
+        foreignKey: 'CollectionId',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
+    });
+    Collection.belongsToMany(models.Archive, {
+        through: models.CollectionItem,
+        foreignKey: 'CollectionId',
+        otherKey: 'ArchiveId',
+        as: 'Archives'
     });
 };
 exports.default = Collection;

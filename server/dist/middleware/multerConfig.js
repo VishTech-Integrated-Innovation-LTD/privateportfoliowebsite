@@ -11,7 +11,8 @@ const multer_1 = __importDefault(require("multer"));
 const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({
     storage,
-    limits: { fileSize: 1024 * 1024 * 2 }, // Limit file size to 2MB
+    limits: { fileSize: 1024 * 1024 * 50 }, // Limit file size to 50MB
+    // limits: { fileSize: 1024 * 1024 * 2 }, // Limit file size to 2MB
 });
 // Export the Multer instance for use in routes
 exports.default = upload;

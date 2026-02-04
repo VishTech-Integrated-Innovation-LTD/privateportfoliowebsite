@@ -53,11 +53,42 @@ const Archive = db_1.default.define("Archive", {
     timestamps: true,
 });
 // Extend the model with `associate`
+// (Archive as typeof Archive & { associate?: (models: Models) => void }).associate = (models: Models) => {
+//   Archive.hasMany(models.CollectionItem, {
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE'
+//   });
+// After defining the Archive model
+// Archive.belongsToMany(Collection, {
+//   through: CollectionItem,
+//   foreignKey: 'ArchiveId',
+//   otherKey: 'CollectionId',
+//   as: 'Collections' // Important: matches the alias in query
+// });
+// };
+// (Archive as any).associate = (models: any) => {
+//   Archive.hasMany(models.CollectionItem, { foreignKey: 'ArchiveId' });
+//   Archive.belongsToMany(models.Collection, {
+//     through: models.CollectionItem,
+//     foreignKey: 'ArchiveId',
+//     otherKey: 'CollectionId',
+//     as: 'Collections'
+//   });
+// //   Archive.belongsTo(models.Category);
+// };
 Archive.associate = (models) => {
     Archive.hasMany(models.CollectionItem, {
+        foreignKey: 'ArchiveId',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     });
+    Archive.belongsToMany(models.Collection, {
+        through: models.CollectionItem,
+        foreignKey: 'ArchiveId',
+        otherKey: 'CollectionId',
+        as: 'Collections'
+    });
+    Archive.belongsTo(models.Category);
 };
 Archive.belongsTo(Category_1.default);
 exports.default = Archive;

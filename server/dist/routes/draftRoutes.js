@@ -6,16 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express")); // Importing express
 const config = require('../config/config');
 // Importing APIs handlers (Controllers)
-const collectionController_1 = require("../controllers/collectionController");
+const draftController_1 = require("../controllers/draftController");
 // Middleware for verifying/validating token
 const validateToken_1 = __importDefault(require("../middleware/validateToken"));
+//  Middleware for file upload
+const multerConfig_1 = require("../middleware/multerConfig");
 // Initialize router
 const router = express_1.default.Router();
-// Public routes
-router.get('', collectionController_1.getAllCollectionsHandler);
-router.get('/:id', collectionController_1.getCollectionByIdHandler);
 // Protected routes (Admin only)
-router.post('/create', validateToken_1.default, collectionController_1.createCollectionHandler);
-router.put('/:id', validateToken_1.default, collectionController_1.updateCollectionHandler);
-router.delete('/:id', validateToken_1.default, collectionController_1.deleteCollectionHandler);
+router.post('/:id/publish', validateToken_1.default, draftController_1.publishDraftHandler);
+router.get('', validateToken_1.default, draftController_1.getAllDraftsHandler);
+router.get('/:id', validateToken_1.default, draftController_1.getDraftByIdHandler);
+router.put('/:id', validateToken_1.default, multerConfig_1.uploadMiddleware, draftController_1.updateDraftItemHandler);
+router.delete('/:id', validateToken_1.default, draftController_1.deleteDraftHandler);
 exports.default = router;
