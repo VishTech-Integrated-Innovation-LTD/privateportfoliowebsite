@@ -199,7 +199,7 @@ const ContributionsSection = () => {
                         <Link
                             key={item.id}
                             to={`/archive-items/${item.id}`}
-                            className="group bg-white block rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 duration-500 overflow-hidden flex flex-col h-full"
+                            className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 duration-500 overflow-hidden flex flex-col h-full"
                         >
                             {/* Media Preview */}
                             <div className="relative h-48 bg-linear-to-br from-[#0047AB]/10 to-[#FFD700]/20 overflow-hidden">
