@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FiFilter, FiSearch } from "react-icons/fi";
 import Footer from "../../components/Footer";
@@ -37,7 +36,7 @@ const Archives = () => {
 
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [items, setItems] = useState<ArchiveItem[]>([]);
+  const [, setItems] = useState<ArchiveItem[]>([]);
   const [filteredItems, setFilteredItems] = useState<ArchiveItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

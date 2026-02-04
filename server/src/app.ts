@@ -28,8 +28,8 @@ import draftRoutes from './routes/draftRoutes';
 
 // CORS options that allows to accept specific methods from a particular domain
 const corsOptions = {
-  origin: "http://localhost:5173",
-//   origin: `${process.env.VITE_FRONTEND_URL}`,
+  // origin: "http://localhost:5173",
+  origin: `${process.env.VITE_FRONTEND_URL}`,
   methods: ["POST", "GET", "PUT", "DELETE"],
 };
 

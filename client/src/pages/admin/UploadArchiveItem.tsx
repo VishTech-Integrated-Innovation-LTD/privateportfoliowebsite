@@ -495,7 +495,7 @@ const UploadArchiveItem = () => {
                                             name="visibility"
                                             checked={formData.visibility === "public"}
                                             value={"public"}
-                                            onChange={(e) => setFormData({ ...formData, visibility: "public" })}
+                                            onChange={(_e) => setFormData({ ...formData, visibility: "public" })}
                                             className="w-5 h-5"
                                         />
                                         <div>
@@ -514,7 +514,7 @@ const UploadArchiveItem = () => {
                                             name="visibility"
                                             value={"private"}
                                             checked={formData.visibility === "private"}
-                                            onChange={(e) => setFormData({ ...formData, visibility: "private" })}
+                                            onChange={(_e) => setFormData({ ...formData, visibility: "private" })}
                                             className="w-5 h-5"
                                         />
                                         <div>

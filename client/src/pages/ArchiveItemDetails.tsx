@@ -6,7 +6,7 @@ import Header from "../components/Header"
 import { FaFileAlt, FaVideo } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FiCalendar, FiDownload, FiEdit2, FiPlus, FiSave, FiSettings, FiShare2, FiTag, FiTrash2, FiX } from "react-icons/fi";
+import { FiCalendar, FiDownload, FiEdit2, FiPlus, FiSave, FiShare2, FiTag, FiTrash2, FiX } from "react-icons/fi";
 
 
 interface Collection {
@@ -61,7 +61,7 @@ const ArchiveItemDetails = () => {
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
 
-  const [showAdminMenu, setShowAdminMenu] = useState(false);
+  // const [showAdminMenu, setShowAdminMenu] = useState(false);
 
   // !! is a common JavaScript trick to convert truthy/falsy values into true or false.
   // If a token exists; isAdmin = true
