@@ -10,7 +10,7 @@ const Footer = () => {
         { icon: FaXTwitter, href: "https://x.com", label: 'X' },
         { icon: FaFacebook, href: "https://facebook.com", label: 'Facebook' },
         { icon: FaInstagram, href: "https://instagram.com", label: 'Instagram' },
-        { icon: FaLinkedin, href: "https://linkedin.com", label: 'LinkedIn' }
+        { icon: FaLinkedin, href: "https://www.linkedin.com/in/folasade-adepoju-89786b162/", label: 'LinkedIn' }
     ];
 
     const quickLinks = [
