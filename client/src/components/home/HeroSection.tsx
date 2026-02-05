@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiMessageSquare } from 'react-icons/fi';
 
 interface HeroSectionProps {
   name: string;
@@ -13,11 +14,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   workplace,
   profileImage
 }) => {
+
+  const whatsappLink = " https://wa.link/g1rtam";
+
+
   return (
     <section className="py-16">
-    <div className="container mx-auto px-4">
-      <div className='flex flex-col md:flex-row items-center gap-8 md:gap-12'>
-        {/* Profile Picture */}
+      <div className="container mx-auto px-4">
+        <div className='flex flex-col md:flex-row items-center gap-8 md:gap-12'>
+          {/* Profile Picture */}
           <div className="w-64 h-80 md:w-80 md:h-96 bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-[#0047AB] shrink-0">
             {profileImage ? (
               <img
@@ -43,9 +48,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <p className="text-lg md:text-xl text-text-muted uppercase tracking-wide">
               {workplace}
             </p>
+            
+            {/* Talk to me button */}
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-8 py-3 rounded-full mt-6 
+             transition-all duration-300 ease-in-out text-xl
+             hover:scale-105 hover:shadow-xl hover:shadow-amber-500/40
+             animate-bounce-slow inline-flex items-center gap-2"
+            >
+              <span>Talk to me</span>
+              <FiMessageSquare size={20} />
+            </a>
+
+
           </div>
+        </div>
       </div>
-    </div>
     </section>
   );
 };
