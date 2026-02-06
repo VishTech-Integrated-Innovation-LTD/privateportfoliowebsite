@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FiArchive, FiFolder, FiHome, FiLogOut, FiMenu, FiUser, FiX } from "react-icons/fi"
+import { FiArchive, FiFolder, FiHome, FiLogOut, FiMenu, FiMessageSquare, FiUser, FiX } from "react-icons/fi"
 import { Link, useNavigate } from "react-router-dom"
 
 const Header = () => {
@@ -20,7 +20,7 @@ const Header = () => {
 
     // WhatsApp link
     // const whatsappLink = "https://wa.me/2347040789324?text=Hello%20Folasade,%20I'd%20like%20to%20talk%20to%20you...";
-    // const whatsappLink = " https://wa.link/g1rtam";
+    const whatsappLink = " https://wa.link/g1rtam";
 
     return (
         <header className="sticky top-0 z-50 text-white bg-[#0047AB] font-[Roboto] min-h-[10vh] p-1 shadow-lg">
@@ -61,7 +61,7 @@ const Header = () => {
                         </Link>
 
                         {/* Auth Section */}
-                        {isAuthenticated && (
+                        {isAuthenticated ? (
                             <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white/20">
                                 <Link
                                     to='/admin/dashboard'
@@ -81,20 +81,20 @@ const Header = () => {
                             </div>
 
                         )
-                            //             : (
-                            //                 <a
-                            //                     href={whatsappLink}
-                            //                     target="_blank"
-                            //                     rel="noopener noreferrer"
-                            //                     className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-6 py-2 rounded-full ml-4 
-                            //  transition-all duration-300 ease-in-out
-                            //  hover:scale-105 hover:shadow-lg hover:shadow-amber-500/40
-                            //  animate-bounce-slow flex items-center gap-2"
-                            //                 >
-                            //                     <span>Talk to me</span>
-                            //                     <FiMessageSquare size={20} />
-                            //                 </a>
-                            //             )
+                            : (
+                                <a
+                                    href={whatsappLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-6 py-2 rounded-full ml-4 
+                             transition-all duration-300 ease-in-out
+                             hover:scale-105 hover:shadow-lg hover:shadow-amber-500/40
+                             animate-bounce-slow flex items-center gap-2"
+                                >
+                                    <span>Talk to me</span>
+                                    <FiMessageSquare size={20} />
+                                </a>
+                            )
                         }
 
                     </nav>
@@ -143,7 +143,7 @@ const Header = () => {
 
 
                             {/* Auth Section */}
-                            {isAuthenticated && (
+                            {isAuthenticated ? (
                                 <>
                                     <Link
                                         to="/admin/dashboard"
@@ -162,20 +162,20 @@ const Header = () => {
                                     </button>
                                 </>
                             )
-                                //                 : (
-                                //                     <a
-                                //                         href={whatsappLink}
-                                //                         target="_blank"
-                                //                         rel="noopener noreferrer"
-                                //                         className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-6 py-3 rounded-full ml-4 
-                                //  transition-all duration-300 ease-in-out
-                                //  hover:scale-105 hover:shadow-xl hover:shadow-amber-500/50
-                                //  animate-bounce-slow flex items-center justify-center gap-2"
-                                //                     >
-                                //                         <span>Talk to me</span>
-                                //                         <FiMessageSquare size={20} />
-                                //                     </a>
-                                //                 )
+                                : (
+                                    <a
+                                        href={whatsappLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="bg-amber-400 hover:bg-amber-500 text-white font-medium px-6 py-3 rounded-full ml-4 
+                                 transition-all duration-300 ease-in-out
+                                 hover:scale-105 hover:shadow-xl hover:shadow-amber-500/50
+                                 animate-bounce-slow flex items-center justify-center gap-2"
+                                    >
+                                        <span>Talk to me</span>
+                                        <FiMessageSquare size={20} />
+                                    </a>
+                                )
                             }
 
                         </nav>
