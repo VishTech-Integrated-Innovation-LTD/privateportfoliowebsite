@@ -7,9 +7,9 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
-        { icon: FaXTwitter, href: "https://x.com", label: 'X' },
-        { icon: FaFacebook, href: "https://facebook.com", label: 'Facebook' },
-        { icon: FaInstagram, href: "https://instagram.com", label: 'Instagram' },
+        { icon: FaXTwitter, href: "https://x.com/folasade_ade?s=21", label: 'X' },
+        { icon: FaFacebook, href: "https://www.facebook.com/shade.belloadepoju", label: 'Facebook' },
+        { icon: FaInstagram, href: "https://www.instagram.com/folasade_adepoju?igsh=MW10MGh1Z3FlbWoxMA==", label: 'Instagram' },
         { icon: FaLinkedin, href: "https://www.linkedin.com/in/folasade-adepoju-89786b162/", label: 'LinkedIn' }
     ];
 
